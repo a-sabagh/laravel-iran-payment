@@ -1,0 +1,48 @@
+{
+    "name": "a-sabagh/laravel-iran-payment",
+    "description": "Simplifies integration with Iranian payment gateways, offering secure, configurable, payment processing",
+    "keywords": [
+        "laravel",
+        "payment",
+        "gateway",
+        "zarinpal"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.24",
+        "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^8.0|^9.3|^10.4|^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "IRPayment\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IRPayment\\Tests\\": "tests/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "IRPayment\\IRPaymentServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always --testdox ./tests",
+        "pint:dirty": "vendor/bin/pint --dirty -v",
+        "pint:test": "vendor/bin/pint --test",
+        "pint:verbose": "vendor/bin/pint -v"
+    },
+    "prefer-stable": true
+}
