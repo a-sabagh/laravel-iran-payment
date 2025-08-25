@@ -25,11 +25,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "IRPayment\\Tests\\": "tests/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+            "IRPayment\\Tests\\": "tests/",
+            "IRPayment\\Database\\Factories\\": "database/factories/"
+        }
     },
     "extra": {
         "laravel": {
