@@ -1,9 +1,9 @@
 <?php
 
-namespace IRPayment\Models\Traits;
+namespace IRPayment\Models\Concerns;
 
-use IRPayment\Models\Payment;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use IRPayment\Models\Payment;
 
 trait Paymentable
 {

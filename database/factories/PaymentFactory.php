@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Factories;
+namespace IRPayment\Database\Factories;
 
-use App\Enums\PaymentChannel;
-use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use IRPayment\Enums\PaymentChannel;
+use IRPayment\Models\Payment;
 
 class PaymentFactory extends Factory
 {

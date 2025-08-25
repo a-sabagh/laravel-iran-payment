@@ -2,10 +2,11 @@
 
 namespace IRPayment\Models;
 
-use IRPayment\Enums\PaymentChannel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use IRPayment\Database\Factories\PaymentFactory;
+use IRPayment\Enums\PaymentChannel;
 
 class Payment extends Model
 {
@@ -35,5 +36,10 @@ class Payment extends Model
     public function paymentable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    protected static function newFactory()
+    {
+        return PaymentFactory::new();
     }
 }
