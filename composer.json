@@ -20,13 +20,15 @@
     },
     "autoload": {
         "psr-4": {
-            "IRPayment\\": "src/"
+            "IRPayment\\": "src/",
+            "IRPayment\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "IRPayment\\Tests\\": "tests/",
-            "IRPayment\\Database\\Factories\\": "database/factories/"
+            "IRPayment\\Tests\\": "tests/", 
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/"
         }
     },
     "extra": {
