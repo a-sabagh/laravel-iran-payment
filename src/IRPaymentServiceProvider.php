@@ -8,6 +8,8 @@ class IRPaymentServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(PaymentDriverManager::class, fn ($app) => new PaymentDriverManager($app));
+
         $this->mergeConfigFrom(
             __DIR__.'/../config/irpayment.php', 'irpayment'
         );
