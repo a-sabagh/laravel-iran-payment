@@ -45,7 +45,7 @@
         "test": "vendor/bin/phpunit --colors=always --testdox ./tests",
         "pint:dirty": "vendor/bin/pint --dirty -v",
         "pint:verbose": "vendor/bin/pint -v",
-        "laravel:phpstan": "vendor/bin/phpstan analyse"
+        "phpstan": "vendor/bin/phpstan analyse"
     },
     "prefer-stable": true
 }
