@@ -13,5 +13,11 @@ class Zarinpal implements PaymentDriver
         protected Collection $config
     ) {}
 
-    public function process(): void {}
+    public function process() {}
+
+    protected function request() {}
+
+    protected function startPay() {}
+
+    public function verify() {}
 }
