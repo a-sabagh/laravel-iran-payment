@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use IRPayment\Database\Factories\PaymentFactory;
 use IRPayment\Enums\PaymentChannel;
+use IRPayment\Enums\PaymentStatus;
 
 class Payment extends Model
 {
@@ -24,12 +25,14 @@ class Payment extends Model
         'authority_token',
         'reference_id',
         'amount',
+        'status',
         'metadata',
     ];
 
     protected $casts = [
         'code' => 'integer',
         'payment_channel' => PaymentChannel::class,
+        'status' => PaymentStatus::class,
         'amount' => 'integer',
         'metadata' => 'array',
     ];

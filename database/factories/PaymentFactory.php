@@ -4,6 +4,7 @@ namespace IRPayment\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use IRPayment\Enums\PaymentChannel;
+use IRPayment\Enums\PaymentStatus;
 use IRPayment\Models\Payment;
 
 class PaymentFactory extends Factory
@@ -22,6 +23,7 @@ class PaymentFactory extends Factory
             'authority_token' => fake()->unique()->regexify('[A-Z0-9a-z]{32,40}'),
             'reference_id' => fake()->unique()->numerify('####################'),
             'amount' => fake()->numberBetween(1000, 1000000),
+            'status' => fake()->randomElement(array_column(PaymentStatus::cases(), 'value')),
             'metadata' => [
                 'ip' => fake()->ipv4(),
                 'user_agent' => fake()->userAgent(),
