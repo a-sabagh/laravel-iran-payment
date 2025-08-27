@@ -10,11 +10,11 @@ return [
     | You can switch to a another driver at runtime using strategy design pattern.
     |
     */
-    'default' => env('IRPYMENT_GATEWAY_DEFAULT', 'default'),
+    'default' => env('IRPYMENT_DRIVER_DEFAULT', 'default'),
 
     /*
     |--------------------------------------------------------------------------
-    | List of gateways
+    | List of drivers
     |--------------------------------------------------------------------------
     |
     | These are the list of drivers to use for this package.
@@ -22,7 +22,7 @@ return [
     | it in the map array too.
     |
     */
-    'gateways' => [
+    'drivers' => [
         'zarinpal' => [
             'merchant_id' => env('IRPYMENT_ZARINPAL_MERCHANT_ID', ''),
         ],
