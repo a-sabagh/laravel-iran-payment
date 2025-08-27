@@ -22,7 +22,7 @@ class Payment extends Model
         'message',
         'card_hash',
         'card_mask',
-        'authority_token',
+        'authority_key',
         'reference_id',
         'amount',
         'status',
@@ -45,5 +45,10 @@ class Payment extends Model
     protected static function newFactory()
     {
         return PaymentFactory::new();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'authority_key';
     }
 }
