@@ -2,4 +2,4 @@
 
 namespace IRPayment\Contracts;
 
-interface PaymentDriverInterface {}
+interface PaymentDriver {}

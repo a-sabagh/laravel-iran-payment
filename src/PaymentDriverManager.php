@@ -3,7 +3,7 @@
 namespace IRPayment;
 
 use Illuminate\Support\Manager;
-use IRPayment\Contracts\PaymentDriverInterface;
+use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Drivers\Zarinpal;
 
 class PaymentDriverManager extends Manager
@@ -13,7 +13,7 @@ class PaymentDriverManager extends Manager
         return $this->config->get('irpayment.default');
     }
 
-    public function createZarinpalDriver(): PaymentDriverInterface
+    public function createZarinpalDriver(): PaymentDriver
     {
         $config = collect($this->config->get('irpayment.drivers.zarinpal', []));
 

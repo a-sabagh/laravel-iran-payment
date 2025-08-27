@@ -3,9 +3,9 @@
 namespace IRPayment\Drivers;
 
 use Illuminate\Support\Collection;
-use IRPayment\Contracts\PaymentDriverInterface;
+use IRPayment\Contracts\PaymentDriver;
 
-class Zarinpal implements PaymentDriverInterface
+class Zarinpal implements PaymentDriver
 {
     public function __construct(
         protected Collection $config
