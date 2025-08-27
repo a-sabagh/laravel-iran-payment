@@ -19,6 +19,7 @@ class PaymentFactory extends Factory
             'message' => fake()->sentence(),
             'card_hash' => fake()->sha256(),
             'card_mask' => fake()->numerify('****-****-****-####'),
+            'authority_token' => fake()->unique()->regexify('[A-Z0-9a-z]{32,40}'),
             'reference_id' => fake()->unique()->numerify('####################'),
             'amount' => fake()->numberBetween(1000, 1000000),
             'metadata' => [

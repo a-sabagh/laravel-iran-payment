@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('message')->nullable();
             $table->string('card_hash', 64)->nullable();
             $table->string('card_mask', 20);
+            $table->string('authority_token', 100)->unique()->nullable();
             $table->string('reference_id', 20)->unique();
             $table->unsignedBigInteger('amount');
             $table->json('metadata')->nullable();

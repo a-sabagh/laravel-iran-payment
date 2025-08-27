@@ -18,6 +18,9 @@ class PaymentDriverManager extends Manager implements Factory
     {
         $config = collect($this->config->get('irpayment.drivers.zarinpal', []));
 
-        return new Zarinpal($config);
+        return new Zarinpal(
+            $this->container->make('request'),
+            $config
+        );
     }
 }

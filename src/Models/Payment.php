@@ -21,6 +21,7 @@ class Payment extends Model
         'message',
         'card_hash',
         'card_mask',
+        'authority_token',
         'reference_id',
         'amount',
         'metadata',
