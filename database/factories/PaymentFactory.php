@@ -27,6 +27,8 @@ class PaymentFactory extends Factory
             'metadata' => [
                 'ip' => fake()->ipv4(),
                 'user_agent' => fake()->userAgent(),
+                'email' => fake()->email(),
+                'mobile' => fake()->phoneNumber(),
             ],
         ];
     }
