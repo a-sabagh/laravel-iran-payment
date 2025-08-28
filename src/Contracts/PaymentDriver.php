@@ -6,6 +6,10 @@ use IRPayment\Models\Payment;
 
 interface PaymentDriver
 {
+    public function title(): string;
+
+    public function description(): string;
+
     public function process(Payment $payment);
 
     public function verify(Payment $payment);
