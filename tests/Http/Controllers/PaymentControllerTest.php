@@ -3,6 +3,7 @@
 namespace IRPayment\Tests\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
 use IRPayment\Tests\TestCase;
 use Workbench\App\Models\Order;
@@ -28,8 +29,30 @@ class PaymentControllerTest extends TestCase
             $order, 'paymentable'
         )->create();
 
+        IRPayment::shouldReceive('driver->verify')
+            ->andReturnTrue();
+
         $response = $this->get("payment/verify/{$payment->authority_key}");
 
         $response->assertViewHas('payment', $payment);
+    }
+
+    public function test_payment_verify_mock_driver(): void
+    {
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->state(['payment_method' => 'zarinpal'])
+            ->for($order, 'paymentable')
+            ->create();
+
+        IRPayment::shouldReceive('driver')
+            ->once()
+            ->with('zarinpal')
+            ->andReturnSelf()
+            ->shouldReceive('verify')
+            ->andReturnTrue();
+
+        $this->get("payment/verify/{$payment->authority_key}");
     }
 }
