@@ -5,6 +5,7 @@ namespace IRPayment\Drivers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use IRPayment\Contracts\PaymentDriver;
+use IRPayment\Models\Payment;
 
 class Zarinpal implements PaymentDriver
 {
@@ -13,11 +14,11 @@ class Zarinpal implements PaymentDriver
         protected Collection $config
     ) {}
 
-    public function process() {}
+    public function process(Payment $payment): void {}
 
     protected function request() {}
 
     protected function startPay() {}
 
-    public function verify() {}
+    public function verify(Payment $payment) {}
 }

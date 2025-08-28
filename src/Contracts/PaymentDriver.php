@@ -2,9 +2,11 @@
 
 namespace IRPayment\Contracts;
 
+use IRPayment\Models\Payment;
+
 interface PaymentDriver
 {
-    public function process();
+    public function process(Payment $payment);
 
-    public function verify();
+    public function verify(Payment $payment);
 }
