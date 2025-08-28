@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
 use IRPayment\Tests\TestCase;
+use Mockery;
 use Workbench\App\Models\Order;
 
 use function Orchestra\Testbench\workbench_path;
@@ -51,6 +52,7 @@ class PaymentControllerTest extends TestCase
             ->with('zarinpal')
             ->andReturnSelf()
             ->shouldReceive('verify')
+            ->with(Mockery::any())
             ->andReturnTrue();
 
         $this->get("payment/verify/{$payment->authority_key}");

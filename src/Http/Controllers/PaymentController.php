@@ -13,7 +13,7 @@ class PaymentController
         $paymentMethod = $payment->payment_method;
 
         $verify = IRPayment::driver($paymentMethod)
-            ->verify();
+            ->verify($payment);
 
         return view('irpayment::verify', compact('payment'));
     }
