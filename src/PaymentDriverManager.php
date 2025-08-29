@@ -2,7 +2,6 @@
 
 namespace IRPayment;
 
-use Illuminate\Http\Client\Factory as ClientFactory;
 use Illuminate\Support\Manager;
 use IRPayment\Contracts\Factory;
 use IRPayment\Contracts\PaymentDriver;
@@ -20,7 +19,6 @@ class PaymentDriverManager extends Manager implements Factory
         $config = collect($this->config->get('irpayment.drivers.zarinpal', []));
 
         return new Zarinpal(
-            $this->container->make(ClientFactory::class),
             $config
         );
     }

@@ -2,8 +2,8 @@
 
 namespace IRPayment\Drivers;
 
-use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
 use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Exceptions\PaymentDriverException;
@@ -13,7 +13,6 @@ use IRPayment\ODT\VerificationValueObject;
 class Zarinpal implements PaymentDriver
 {
     public function __construct(
-        protected Factory $request,
         protected Collection $config
     ) {}
 
@@ -29,16 +28,16 @@ class Zarinpal implements PaymentDriver
 
     protected function CallbackUrl()
     {
-        return route('irpayment::payment.zarinpal.verify');
+        return route('irpayment.payment.zarinpal.verify');
     }
 
     public function process(Payment $payment): void
     {
         [
             'authority' => $authorityKey,
-        ] = $data = $this->request($payment);
+        ] = $this->request($payment);
 
-        $payment->update($data);
+        $payment->update(['authority_key' => $authorityKey]);
 
         $this->startPay($authorityKey);
     }
@@ -62,7 +61,9 @@ class Zarinpal implements PaymentDriver
             'callback_url' => $this->callbackUrl(),
         ];
 
-        $response = $this->request->asJson()->acceptJson()->post($url, $data);
+        $httpResponse = Http::asJson()->acceptJson()->post($url, $data);
+
+        $response = $httpResponse->json();
 
         if ($response['data']['code'] != 100) {
             $code = $response['data']['code'];
@@ -84,7 +85,9 @@ class Zarinpal implements PaymentDriver
             'amount' => $amount,
         ];
 
-        $response = $this->request->asJson()->acceptJson()->post($url, $data);
+        $httpResponse = Http::asJson()->acceptJson()->post($url, $data);
+
+        $response = $httpResponse->json();
 
         $verificationVO = new VerificationValueObject(
             code: data_get($response, 'data.code'),
