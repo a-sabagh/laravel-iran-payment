@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
+use IRPayment\DTO\ProcessResponseValueObject;
 use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
@@ -43,7 +44,11 @@ class PaymentZarinpalProcessTest extends TestCase
             $order, 'paymentable'
         )->create();
 
-        IRPayment::driver('zarinpal')->process($payment);
+        $processResponseVO = IRPayment::driver('zarinpal')->process($payment);
+
+        $this->assertInstanceOf(ProcessResponseValueObject::class, $processResponseVO);
+        $this->assertStringEndsWith($processResponseVO->authorityKey, 'A0000000000000000000000000000wwOGYpd');
+        $this->assertStringEndsWith('A0000000000000000000000000000wwOGYpd', $processResponseVO->redirectResponseUrl);
 
         Http::assertSent(function (Request $request) use ($payment) {
             return
@@ -58,8 +63,8 @@ class PaymentZarinpalProcessTest extends TestCase
     {
         $this->expectException(PaymentDriverException::class);
         $this->expectExceptionCode(-10);
-        $this->expectExceptionMessage(Lang::get("irpayment::messages.zarinpal.-10"));
-        $this->expectExceptionMessage("Terminal is not valid, please check merchant_id or ip address.");
+        $this->expectExceptionMessage(Lang::get('irpayment::messages.zarinpal.-10'));
+        $this->expectExceptionMessage('Terminal is not valid, please check merchant_id or ip address.');
 
         $requestResponseFailed = file_get_contents(__DIR__.'/fake/zarinpal/request-10.json');
 
