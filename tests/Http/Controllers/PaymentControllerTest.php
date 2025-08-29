@@ -32,7 +32,7 @@ class PaymentControllerTest extends TestCase
         IRPayment::shouldReceive('driver->verify')
             ->andReturnTrue();
 
-        $response = $this->get("payment/verify/{$payment->authority_key}");
+        $response = $this->get("payment/details/{$payment->authority_key}");
 
         $response->assertViewHas('payment', $payment);
     }
