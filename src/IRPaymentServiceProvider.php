@@ -2,6 +2,7 @@
 
 namespace IRPayment;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class IRPaymentServiceProvider extends ServiceProvider
@@ -17,12 +18,19 @@ class IRPaymentServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'irpayment');
+        $this->registerRoutes();
 
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'irpayment');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'irpayment');
+    }
+
+    protected function registerRoutes()
+    {
+        Route::group(['as' => 'irpayment.'], function () {
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        });
     }
 }
