@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Lang;
 use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Models\Payment;
+use IRPayment\ODT\ProcessResponseValueObject;
 use IRPayment\ODT\VerificationValueObject;
 
 class Zarinpal implements PaymentDriver
@@ -31,22 +32,27 @@ class Zarinpal implements PaymentDriver
         return route('irpayment.payment.zarinpal.verify');
     }
 
-    public function process(Payment $payment): void
+    public function process(Payment $payment): ProcessResponseValueObject
     {
         [
             'authority' => $authorityKey,
         ] = $this->request($payment);
 
-        $payment->update(['authority_key' => $authorityKey]);
+        $redirectResponseUrl = $this->startPay($authorityKey);
 
-        $this->startPay($authorityKey);
+        $responseVO = new ProcessResponseValueObject(
+            redirectResponseUrl: $redirectResponseUrl,
+            authorityKey: $authorityKey
+        );
+
+        return $responseVO;
     }
 
     public function startPay(string $authorityKey)
     {
         $url = "https://payment.zarinpal.com/pg/StartPay/{$authorityKey}";
 
-        return redirect($url);
+        return $url;
     }
 
     protected function request(Payment $payment): array
