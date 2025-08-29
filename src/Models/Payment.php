@@ -2,6 +2,8 @@
 
 namespace IRPayment\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -50,5 +52,10 @@ class Payment extends Model
     public function getRouteKeyName(): string
     {
         return 'authority_key';
+    }
+
+    public function scopeAuthorityKey(Builder $query, string $authorityKey): Builder
+    {
+        return $query->where('authority_key', $authorityKey);
     }
 }
