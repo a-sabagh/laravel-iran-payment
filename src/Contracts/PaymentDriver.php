@@ -12,5 +12,5 @@ interface PaymentDriver
 
     public function process(Payment $payment);
 
-    public function verify(Payment $payment);
+    public function verify(int $amount, string $authorityKey);
 }
