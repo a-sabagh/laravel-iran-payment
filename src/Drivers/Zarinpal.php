@@ -2,17 +2,18 @@
 
 namespace IRPayment\Drivers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Models\Payment;
+use IRPayment\ODT\VerificationValueObject;
 
 class Zarinpal implements PaymentDriver
 {
     public function __construct(
-        protected Request $request,
+        protected Factory $request,
         protected Collection $config
     ) {}
 
@@ -28,24 +29,24 @@ class Zarinpal implements PaymentDriver
 
     protected function CallbackUrl()
     {
-        return route('irpayment::payment.verify');
+        return route('irpayment::payment.zarinpal.verify');
     }
 
     public function process(Payment $payment): void
     {
         [
-            'authority' => $authority,
+            'authority' => $authorityKey,
         ] = $data = $this->request($payment);
 
         $payment->update($data);
 
-        $this->redirect($authority);
+        $this->startPay($authorityKey);
     }
 
-    public function redirect(string $authority)
+    public function startPay(string $authorityKey)
     {
-        $url = "https://payment.zarinpal.com/pg/StartPay/{$authority}";
-         
+        $url = "https://payment.zarinpal.com/pg/StartPay/{$authorityKey}";
+
         return redirect($url);
     }
 
@@ -67,13 +68,32 @@ class Zarinpal implements PaymentDriver
             $code = $response['data']['code'];
             $message = Lang::get("irpayment::drivers.{$code}");
 
-            throw new PaymentDriverException($code, $message);
+            throw new PaymentDriverException($message, $code);
         }
 
         return $response['data'];
     }
 
-    protected function startPay() {}
+    public function verify(int $amount, string $authorityKey): VerificationValueObject
+    {
+        $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
 
-    public function verify(Payment $payment) {}
+        $data = [
+            'merchant_id' => $this->config->get('merchant_id'),
+            'authority' => $authorityKey,
+            'amount' => $amount,
+        ];
+
+        $response = $this->request->asJson()->acceptJson()->post($url, $data);
+
+        $verificationVO = new VerificationValueObject(
+            code: data_get($response, 'data.code'),
+            message: data_get($response, 'data.message'),
+            cardHash: data_get($response, 'data.card_hash'),
+            cardMask: data_get($response, 'data.card_pan'),
+            referenceId: data_get($response, 'data.ref_id'),
+        );
+
+        return $verificationVO;
+    }
 }
