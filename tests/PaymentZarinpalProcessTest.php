@@ -15,18 +15,6 @@ class PaymentZarinpalProcessTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/request.json');
-
-        Http::fake([
-            'https://api.zarinpal.com/pg/v4/payment/request.json' => Http::response($requestResponse, 200),
-        ]);
-
-    }
-
     protected function defineDatabaseMigrations()
     {
         $this->loadMigrationsFrom(
@@ -36,6 +24,12 @@ class PaymentZarinpalProcessTest extends TestCase
 
     public function test_zarinpal_process_payment_with_payment_object(): void
     {
+        $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/request.json');
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/request.json' => Http::response($requestResponse, 200),
+        ]);
+
         $this->app->config->set('irpayment.drivers.zarinpal', [
             'merchant_id' => '1234',
             'currency' => 'IRR',
