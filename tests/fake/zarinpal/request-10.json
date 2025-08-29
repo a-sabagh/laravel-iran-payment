@@ -1,0 +1,10 @@
+{
+    "data": {
+        "code": -10,
+        "message": "Terminal is not valid, please check merchant_id or ip address.",
+        "authority": "",
+        "fee_type": "Merchant",
+        "fee": 100
+    },
+    "errors": []
+}

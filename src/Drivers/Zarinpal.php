@@ -73,7 +73,7 @@ class Zarinpal implements PaymentDriver
 
         if ($response['data']['code'] != 100) {
             $code = $response['data']['code'];
-            $message = Lang::get("irpayment::drivers.{$code}");
+            $message = Lang::get("irpayment::messages.zarinpal.{$code}");
 
             throw new PaymentDriverException($message, $code);
         }
