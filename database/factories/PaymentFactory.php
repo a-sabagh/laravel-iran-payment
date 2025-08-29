@@ -17,7 +17,7 @@ class PaymentFactory extends Factory
             'code' => fake()->numberBetween(100, 999),
             'payment_channel' => fake()->randomElement(array_column(PaymentChannel::cases(), 'value')),
             'payment_method' => null,
-            'message' => fake()->sentence(),
+            'description' => fake()->sentence(),
             'card_hash' => fake()->sha256(),
             'card_mask' => fake()->numerify('****-****-****-####'),
             'authority_key' => fake()->unique()->regexify('[A-Z0-9a-z]{32,40}'),
