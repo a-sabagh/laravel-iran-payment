@@ -1,6 +1,6 @@
 <?php
 
-namespace IRPayment\ODT;
+namespace IRPayment\DTO;
 
 class VerificationValueObject
 {

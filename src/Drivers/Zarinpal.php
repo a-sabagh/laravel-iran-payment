@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Lang;
 use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Models\Payment;
-use IRPayment\ODT\ProcessResponseValueObject;
-use IRPayment\ODT\VerificationValueObject;
+use IRPayment\DTO\ProcessResponseValueObject;
+use IRPayment\DTO\VerificationValueObject;
 
 class Zarinpal implements PaymentDriver
 {
