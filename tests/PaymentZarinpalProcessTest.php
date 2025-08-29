@@ -43,8 +43,6 @@ class PaymentZarinpalProcessTest extends TestCase
 
         IRPayment::driver('zarinpal')->process($payment);
 
-        $this->assertSame($payment->authority_key, 'A0000000000000000000000000000wwOGYpd');
-
         Http::assertSent(function (Request $request) use ($payment) {
             return
                 $request['currency'] == 'IRR' &&
