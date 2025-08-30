@@ -101,5 +101,10 @@ class ZarinpalPaymentVerifyTest extends TestCase
                 $actualPayment->card_hash == '1EBE3EBEBE35C7EC0F8D6EE4F2F859107A87822CA179BC9528767EA7B5489B69' &&
                 $actualPayment->card_mask == '502229******5995';
         });
+
+        $response->assertViewHasAll([
+            'payment' => fn ($actualPayment) => $payment->is($actualPayment),
+            'verification' => fn ($verification) => $verification->message == 'Success',
+        ]);
     }
 }
