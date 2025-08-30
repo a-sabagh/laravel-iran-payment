@@ -36,6 +36,8 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_status_invalid(): void
     {
+        $this->withoutExceptionHandling();
+
         $order = Order::factory()->create();
 
         $payment = Payment::factory()
@@ -59,6 +61,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_authority_key_invalid(): void
     {
+        $this->withoutExceptionHandling();
         $authorityKey = fake()->unique()->regexify('A00000[A-Z0-9a-z]{32,40}');
 
         $requestData = [
@@ -151,5 +154,36 @@ class ZarinpalPaymentVerifyTest extends TestCase
                     $actualPayment->status == PaymentStatus::FAILED;
             },
         ]);
+    }
+
+    public function test_payment_verification_cancelled(): void
+    {
+        $requestResponse = file_get_contents(package_path('tests/fake/zarinpal/verify.json'));
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
+        ]);
+
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->processing()
+            ->for($order, 'paymentable')
+            ->create();
+
+        $requestData = [
+            'authority' => $payment->authority_key,
+            'status' => ZarinpalVerificationStatus::CANCELED,
+        ];
+
+        $response = $this->get(route('irpayment.payment.zarinpal.verify', $requestData));
+
+        $response->assertViewHasAll([
+            'payment' => $payment,
+        ]);
+
+        $payment->refresh();
+
+        $this->assertSame($payment->status, PaymentStatus::CANCELED);
     }
 }
