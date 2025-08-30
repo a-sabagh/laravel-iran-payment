@@ -36,7 +36,7 @@ class ZarinpalPaymentController
         $amount = $payment->amount;
 
         $verification = IRPayment::driver('zarinpal')
-            ->verify($authorityKey, $amount);
+            ->verify($amount, $authorityKey);
 
         if ($verification->isFailed()) {
             return view('irpayment::invalid', compact('payment'));
