@@ -82,7 +82,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         IRPayment::driver('zarinpal')->process($payment);
     }
 
-    public function test_zarinpal_verify_process_success(): void
+    public function test_zarinpal_verify_success(): void
     {
         $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/verify.json');
 
@@ -106,7 +106,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         $this->assertFalse($verificationVO->isFailed());
     }
 
-    public function test_zarinpal_verify_process_failed(): void
+    public function test_zarinpal_verify_failed(): void
     {
         $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/verify-61.json');
 
