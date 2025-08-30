@@ -2,7 +2,7 @@
 
 return [
     'zarinpal' => [
-        -9  => 'Validation error',
+        -9 => 'Validation error',
         -10 => 'Terminal is not valid, please check merchant_id or ip address.',
         -11 => 'Terminal is not active, please contact our support team.',
         -12 => 'Too many attempts, please try again later.',
