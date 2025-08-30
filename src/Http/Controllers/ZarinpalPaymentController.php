@@ -24,7 +24,7 @@ class ZarinpalPaymentController
             'status' => ['required', Rule::enum(ZarinpalVerificationStatus::class)],
         ]);
 
-        // payment failed on invalidation callback request
+        // payment failed on invalidation callback request: `no action`
         if ($validator->fails()) {
             $errors = $validator->errors();
 
