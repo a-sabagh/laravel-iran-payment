@@ -7,6 +7,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
 use IRPayment\DTO\ProcessResponseValueObject;
+use IRPayment\DTO\VerificationValueObject;
 use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
@@ -14,7 +15,7 @@ use Workbench\App\Models\Order;
 
 use function Orchestra\Testbench\workbench_path;
 
-class PaymentZarinpalProcessTest extends TestCase
+class PaymentZarinpalPublicActionsTest extends TestCase
 {
     use RefreshDatabase;
 
