@@ -16,11 +16,15 @@ class ZarinpalPaymentController
 {
     public function verify(Request $request, PaymentRepository $paymentRepo): View
     {
+        $authorityKey = $request->string('authority');
+        $payment = $paymentRepo->findByAuthorityKey($authorityKey);
+
         $validator = Validator::make($request->all(), [
             'authority' => ['required', 'string', 'exists:payments,authority_key'],
             'status' => ['required', Rule::enum(ZarinpalVerificationStatus::class)],
         ]);
 
+        // payment failed on invalidation callback request
         if ($validator->fails()) {
             $errors = $validator->errors();
 
@@ -28,13 +32,10 @@ class ZarinpalPaymentController
         }
 
         $status = $request->enum('status', ZarinpalVerificationStatus::class);
-        $authorityKey = $request->string('authority');
-        $payment = $paymentRepo->findByAuthorityKey($authorityKey);
 
+        // payment cancelled on callback request status
         if ($status == ZarinpalVerificationStatus::CANCELED) {
-            $payment->update([
-                'status' => PaymentStatus::CANCELED,
-            ]);
+            $payment->update(['status' => PaymentStatus::CANCELED]);
 
             return view('irpayment::cancelled', compact('payment'));
         }
@@ -44,6 +45,7 @@ class ZarinpalPaymentController
         $verification = IRPayment::driver('zarinpal')
             ->verify($amount, $authorityKey);
 
+        // payment failed on driver verify request response
         if ($verification->isFailed()) {
             $payment->update([
                 'code' => $verification->code,
@@ -53,6 +55,7 @@ class ZarinpalPaymentController
             return view('irpayment::invalid', compact('payment', 'verification'));
         }
 
+        // payment verified
         $payment->update($verification->toArray());
 
         event(new PaymentVerified($payment));
