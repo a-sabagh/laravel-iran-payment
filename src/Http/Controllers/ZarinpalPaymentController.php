@@ -44,6 +44,6 @@ class ZarinpalPaymentController
 
         $payment->update($verification->toArray());
 
-        return view('irpayment::verify', compact('payment'));
+        return view('irpayment::verify', compact('payment', 'verification'));
     }
 }
