@@ -1,0 +1,9 @@
+{
+    "data": [],
+    "errors": {
+        "code": -61,
+        "message": "Session is not in success status.",
+        "fee_type": "Merchant",
+        "fee": 0
+    }
+}
