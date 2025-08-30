@@ -6,10 +6,10 @@ class VerificationValueObject
 {
     public function __construct(
         public int $code,
-        public int $referenceId,
+        public ?int $referenceId,
         public string $message,
-        public string $cardHash,
-        public string $cardMask
+        public ?string $cardHash,
+        public ?string $cardMask
     ) {}
 
     public function isSuccess(): bool
