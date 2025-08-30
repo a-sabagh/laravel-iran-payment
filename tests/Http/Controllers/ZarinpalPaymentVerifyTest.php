@@ -4,6 +4,7 @@ namespace IRPayment\Tests\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\MessageBag;
 use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
@@ -68,8 +69,6 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_success(): void
     {
-        $this->withoutExceptionHandling();
-
         $requestResponse = file_get_contents(package_path('tests/fake/zarinpal/verify.json'));
 
         Http::fake([
@@ -102,9 +101,42 @@ class ZarinpalPaymentVerifyTest extends TestCase
                 $actualPayment->card_mask == '502229******5995';
         });
 
+        $response->assertViewIs('irpayment::verify');
+        $response->assertViewHas(
+            'verification', fn ($verification) => $verification->message == 'Success'
+        );
+    }
+
+    public function test_payment_verification_failed(): void
+    {
+        $requestResponse = file_get_contents(package_path('tests/fake/zarinpal/verify-61.json'));
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
+        ]);
+
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->processing()
+            ->for($order, 'paymentable')
+            ->create();
+
+        $requestData = [
+            'authority' => $payment->authority_key,
+            'status' => ZarinpalVerificationStatus::SUCCESS,
+        ];
+
+        $response = $this->get(route('irpayment.payment.zarinpal.verify', $requestData));
+
+        $response->assertViewIs('irpayment::invalid');
         $response->assertViewHasAll([
-            'payment' => fn ($actualPayment) => $payment->is($actualPayment),
-            'verification' => fn ($verification) => $verification->message == 'Success',
+            'verification' => fn ($verification) => Lang::get('irpayment::messages.zarinpal.-61') == $verification->message,
+            'payment' => function ($actualPayment) {
+                return
+                    $actualPayment->code == -61 &&
+                    $actualPayment->status == PaymentStatus::FAILED;
+            },
         ]);
     }
 }

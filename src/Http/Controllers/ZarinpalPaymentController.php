@@ -6,6 +6,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Repositories\PaymentRepository;
@@ -39,7 +40,12 @@ class ZarinpalPaymentController
             ->verify($amount, $authorityKey);
 
         if ($verification->isFailed()) {
-            return view('irpayment::invalid', compact('payment'));
+            $payment->update([
+                'code' => $verification->code,
+                'status' => PaymentStatus::FAILED,
+            ]);
+
+            return view('irpayment::invalid', compact('payment', 'verification'));
         }
 
         $payment->update($verification->toArray());
