@@ -97,19 +97,23 @@ class Zarinpal implements PaymentDriver
 
         if (! isset($response['data']['code'])) {
             $code = data_get($response, 'errors.code');
+            $message = Lang::get("irpayment::messages.zarinpal.{$code}");
 
             return new VerificationValueObject(
                 code: $code,
-                message: data_get($data, Lang::get("irpayment::messages.zarinpal.{$code}")),
+                message: $message,
                 cardHash: null,
                 cardMask: null,
                 referenceId: null,
             );
         }
 
+        $code = data_get($response, 'data.code');
+        $message = Lang::get("irpayment::messages.zarinpal.{$code}");
+
         return new VerificationValueObject(
-            code: data_get($response, 'data.code'),
-            message: data_get($response, 'data.message'),
+            code: $code,
+            message: $message,
             cardHash: data_get($response, 'data.card_hash'),
             cardMask: data_get($response, 'data.card_pan'),
             referenceId: data_get($response, 'data.ref_id'),

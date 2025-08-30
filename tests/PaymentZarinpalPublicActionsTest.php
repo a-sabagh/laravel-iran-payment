@@ -97,7 +97,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
 
         $this->assertInstanceOf(VerificationValueObject::class, $verificationVO);
         $this->assertSame(100, $verificationVO->code);
-        $this->assertSame('Verified', $verificationVO->message);
+        $this->assertSame('Success', $verificationVO->message);
         $this->assertSame('1EBE3EBEBE35C7EC0F8D6EE4F2F859107A87822CA179BC9528767EA7B5489B69', $verificationVO->cardHash);
         $this->assertSame('502229******5995', $verificationVO->cardMask);
         $this->assertSame(201, $verificationVO->referenceId);
@@ -106,7 +106,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         $this->assertFalse($verificationVO->isFailed());
     }
 
-    public function _test_zarinpal_verify_process_failed(): void
+    public function test_zarinpal_verify_process_failed(): void
     {
         $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/verify-61.json');
 
@@ -122,8 +122,8 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         $this->assertInstanceOf(VerificationValueObject::class, $verificationVO);
         $this->assertSame(-61, $verificationVO->code);
         $this->assertSame('Session is not in success status.', $verificationVO->message);
-        $this->assertSame('1EBE3EBEBE35C7EC0F8D6EE4F2F859107A87822CA179BC9528767EA7B5489B69', $verificationVO->cardHash);
-        $this->assertSame('502229******5995', $verificationVO->cardMask);
+        $this->assertNull($verificationVO->cardHash);
+        $this->assertNull($verificationVO->cardMask);
         $this->assertNull($verificationVO->referenceId);
 
         $this->assertFalse($verificationVO->isSuccess());
