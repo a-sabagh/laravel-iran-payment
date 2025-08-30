@@ -3,12 +3,15 @@
 namespace IRPayment\Tests\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\MessageBag;
+use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
 use IRPayment\Models\Payment;
 use IRPayment\Tests\TestCase;
 use Workbench\App\Models\Order;
 
+use function Orchestra\Testbench\package_path;
 use function Orchestra\Testbench\workbench_path;
 
 class ZarinpalPaymentVerifyTest extends TestCase
@@ -60,6 +63,43 @@ class ZarinpalPaymentVerifyTest extends TestCase
             return
                 $errors->missing('status') &&
                 $errors->has('authority');
+        });
+    }
+
+    public function test_payment_verification_success(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $requestResponse = file_get_contents(package_path('tests/fake/zarinpal/verify.json'));
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
+        ]);
+
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->processing()
+            ->for($order, 'paymentable')
+            ->create();
+
+        $requestData = [
+            'authority' => $payment->authority_key,
+            'status' => ZarinpalVerificationStatus::SUCCESS,
+        ];
+
+        $response = $this->get(route('irpayment.payment.zarinpal.verify', $requestData));
+
+        $payment->refresh();
+
+        $response->assertOk();
+        $response->assertViewHas('payment', function ($actualPayment) {
+            return
+                $actualPayment->code == 100 &&
+                $actualPayment->reference_id == 201 &&
+                $actualPayment->status == PaymentStatus::PROCESSING &&
+                $actualPayment->card_hash == '1EBE3EBEBE35C7EC0F8D6EE4F2F859107A87822CA179BC9528767EA7B5489B69' &&
+                $actualPayment->card_mask == '502229******5995';
         });
     }
 }
