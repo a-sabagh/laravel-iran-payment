@@ -3,6 +3,7 @@
 namespace IRPayment\Tests\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\MessageBag;
@@ -18,6 +19,13 @@ use function Orchestra\Testbench\workbench_path;
 class ZarinpalPaymentVerifyTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+    }
 
     protected function defineDatabaseMigrations()
     {
@@ -105,6 +113,11 @@ class ZarinpalPaymentVerifyTest extends TestCase
         $response->assertViewHas(
             'verification', fn ($verification) => $verification->message == 'Success'
         );
+
+        Event::assertDispatched(\IRPayment\Events\PaymentVerified::class, function ($event) use ($payment) {
+            return $event->payment->is($payment);
+        });
+
     }
 
     public function test_payment_verification_failed(): void

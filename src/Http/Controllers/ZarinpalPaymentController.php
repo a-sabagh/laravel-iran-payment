@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
+use IRPayment\Events\PaymentVerified;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Repositories\PaymentRepository;
 
@@ -49,6 +50,8 @@ class ZarinpalPaymentController
         }
 
         $payment->update($verification->toArray());
+
+        event(new PaymentVerified($payment));
 
         return view('irpayment::verify', compact('payment', 'verification'));
     }
