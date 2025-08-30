@@ -4,6 +4,7 @@ namespace IRPayment\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use IRPayment\Enums\ZarinpalVerificationStatus;
 use IRPayment\Facades\IRPayment;
@@ -13,17 +14,15 @@ class ZarinpalPaymentController
 {
     public function verify(Request $request, PaymentRepository $paymentRepo): View
     {
-        $request->validate([
-            'authority' => ['required', 'string'],
+        $validator = Validator::make($request->all(), [
+            'authority' => ['required', 'string', 'exists:payments,authority_key'],
             'status' => ['required', Rule::enum(ZarinpalVerificationStatus::class)],
         ]);
 
-        $authorityKey = $request->string('authority');
+        if ($validator->fails()) {
+            $errors = $validator->errors();
 
-        $payment = $paymentRepo->findByAuthorityKey($authorityKey);
-
-        if (! $payment) {
-            return view('irpayment::invalid');
+            return view('irpayment::invalid', compact('errors'));
         }
 
         $status = $request->enum('status', ZarinpalVerificationStatus::class);
@@ -32,6 +31,8 @@ class ZarinpalPaymentController
             return view('irpayment::cancelled', compact('payment'));
         }
 
+        $authorityKey = $request->string('authority');
+        $payment = $paymentRepo->findByAuthorityKey($authorityKey);
         $amount = $payment->amount;
 
         $verification = IRPayment::driver('zarinpal')
