@@ -40,4 +40,20 @@ class PaymentFactory extends Factory
             'payment_method' => null,
         ]);
     }
+
+    public function pending(): static
+    {
+        return $this->state([
+            'status' => PaymentStatus::PENDING,
+            'autorithy_key' => null,
+            'code' => 0,
+        ]);
+    }
+
+    public function processing(): static
+    {
+        return $this->state([
+            'status' => PaymentStatus::PROCESSING,
+        ]);
+    }
 }
