@@ -26,9 +26,9 @@ class ZarinpalPaymentVerifyTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $payment = Payment::factory()->for(
-            $order, 'paymentable'
-        )->create();
+        $payment = Payment::factory()
+            ->for($order, 'paymentable')
+            ->create();
 
         $requestData = [
             'authority' => $payment->authority_key,
