@@ -27,7 +27,6 @@ class VerificationValueObject
         return [
             'code' => $this->code,
             'reference_id' => $this->referenceId,
-            'message' => $this->message,
             'card_hash' => $this->cardHash,
             'card_mask' => $this->cardMask,
         ];
