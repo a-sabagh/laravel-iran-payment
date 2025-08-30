@@ -71,8 +71,8 @@ class Zarinpal implements PaymentDriver
 
         $response = $httpResponse->json();
 
-        if ($response['data']['code'] != 100) {
-            $code = $response['data']['code'];
+        if (empty($response['data']) || $response['data']['code'] != 100) {
+            $code = $response['errors']['code'];
             $message = Lang::get("irpayment::messages.zarinpal.{$code}");
 
             throw new PaymentDriverException($message, $code);
@@ -95,14 +95,24 @@ class Zarinpal implements PaymentDriver
 
         $response = $httpResponse->json();
 
-        $verificationVO = new VerificationValueObject(
+        if (! isset($response['data']['code'])) {
+            $code = data_get($response, 'errors.code');
+
+            return new VerificationValueObject(
+                code: $code,
+                message: data_get($data, Lang::get("irpayment::messages.zarinpal.{$code}")),
+                cardHash: null,
+                cardMask: null,
+                referenceId: null,
+            );
+        }
+
+        return new VerificationValueObject(
             code: data_get($response, 'data.code'),
             message: data_get($response, 'data.message'),
             cardHash: data_get($response, 'data.card_hash'),
             cardMask: data_get($response, 'data.card_pan'),
             referenceId: data_get($response, 'data.ref_id'),
         );
-
-        return $verificationVO;
     }
 }
