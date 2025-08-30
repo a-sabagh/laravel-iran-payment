@@ -81,4 +81,25 @@ class PaymentZarinpalPublicActionsTest extends TestCase
 
         IRPayment::driver('zarinpal')->process($payment);
     }
+
+    public function test_zarinpal_verify_process(): void
+    {
+        $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/verify.json');
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
+        ]);
+
+        $amount = fake()->numberBetween(1000,9999);
+        $authorityKey = fake()->unique()->regexify('A00000[A-Z0-9a-z]{32,40}');
+
+        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, $authorityKey);
+
+        $this->assertInstanceOf(VerificationValueObject::class, $verificationVO);
+        $this->assertSame(100, $verificationVO->code);
+        $this->assertSame("Verified", $verificationVO->message);
+        $this->assertSame("1EBE3EBEBE35C7EC0F8D6EE4F2F859107A87822CA179BC9528767EA7B5489B69", $verificationVO->cardHash);
+        $this->assertSame("502229******5995", $verificationVO->cardMask);
+        $this->assertSame(201, $verificationVO->referenceId);
+    }
 }
