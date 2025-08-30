@@ -58,6 +58,8 @@ class PaymentZarinpalPublicActionsTest extends TestCase
                 $request['description'] == $payment->description &&
                 $request['merchant_id'] == '1234';
         });
+
+        Http::assertSentCount(1);
     }
 
     public function test_zarinpal_process_payment_with_payment_object_failed(): void
