@@ -3,6 +3,7 @@
 namespace IRPayment\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
@@ -130,5 +131,21 @@ class PaymentZarinpalPublicActionsTest extends TestCase
 
         $this->assertFalse($verificationVO->isSuccess());
         $this->assertTrue($verificationVO->isFailed());
+    }
+
+    public function test_zarinpal_verify_failed_connection(): void
+    {
+        $this->expectException(ConnectionException::class);
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::failedConnection(),
+        ]);
+
+        $amount = fake()->numberBetween(1000, 9999);
+        $authorityKey = fake()->unique()->regexify('A00000[A-Z0-9a-z]{32,40}');
+
+        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, $authorityKey);
+
+        $this->assertNull($verificationVO);
     }
 }
