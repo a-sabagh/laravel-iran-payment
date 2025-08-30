@@ -28,13 +28,17 @@ class ZarinpalPaymentController
         }
 
         $status = $request->enum('status', ZarinpalVerificationStatus::class);
+        $authorityKey = $request->string('authority');
+        $payment = $paymentRepo->findByAuthorityKey($authorityKey);
 
         if ($status == ZarinpalVerificationStatus::CANCELED) {
+            $payment->update([
+                'status' => PaymentStatus::CANCELED,
+            ]);
+
             return view('irpayment::cancelled', compact('payment'));
         }
 
-        $authorityKey = $request->string('authority');
-        $payment = $paymentRepo->findByAuthorityKey($authorityKey);
         $amount = $payment->amount;
 
         $verification = IRPayment::driver('zarinpal')
