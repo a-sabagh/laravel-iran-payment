@@ -2,9 +2,11 @@
 
 namespace IRPayment\Tests;
 
+use IRPayment\Drivers\CardTransfer;
 use IRPayment\Drivers\Zarinpal;
 use IRPayment\Facades\IRPayment;
 use IRPayment\PaymentDriverManager;
+use PHPUnit\Framework\Attributes\Depends;
 
 class PaymentDriverTest extends TestCase
 {
@@ -20,5 +22,13 @@ class PaymentDriverTest extends TestCase
         $actualPaymentManager = IRPayment::getFacadeRoot();
 
         $this->assertInstanceOf(PaymentDriverManager::class, $actualPaymentManager);
+    }
+
+    #[Depends('test_payment_facade_room_object')]
+    public function test_payment_manager_can_instanciate_card_transfer_driver(): void
+    {
+        $cardTransferDriver = IRPayment::driver('card_transfer');
+
+        $this->assertInstanceOf(CardTransfer::class, $cardTransferDriver);
     }
 }
