@@ -182,5 +182,32 @@ class ZarinpalPaymentVerifyTest extends TestCase
         $payment->refresh();
 
         $this->assertSame($payment->status, PaymentStatus::CANCELED);
+
+        Http::assertNothingSent();
+    }
+
+    public function test_prevent_cancelling_payment_which_already_completed(): void
+    {
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->complete()
+            ->for($order, 'paymentable')
+            ->create();
+
+        $requestData = [
+            'authority' => $payment->authority_key,
+            'status' => ZarinpalVerificationStatus::CANCELED,
+        ];
+
+        $response = $this->get(route('irpayment.payment.zarinpal.verify', $requestData));
+
+        $response->assertViewIs('irpayment::invalid');
+        $response->assertViewHas('errors', fn (MessageBag $errors) => $errors->has('payment')
+        );
+        $payment->refresh();
+
+        $this->assertSame($payment->status, PaymentStatus::COMPLETE);
+        Http::assertNothingSent();
     }
 }
