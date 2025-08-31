@@ -34,7 +34,7 @@ class Zarinpal implements OnlineChannel, PaymentDriver
         return $this->config->get('description', Lang::get('irpayment::drivers.zarinpal'));
     }
 
-    protected function CallbackUrl()
+    public function CallbackUrl(): string
     {
         return route('irpayment.payment.zarinpal.verify');
     }
