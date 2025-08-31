@@ -25,6 +25,12 @@ class IRPaymentServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->loadTranslationsFrom(__DIR__.'/../lang', 'irpayment');
+
+        $this->publishes([
+            __DIR__.'/../lang' => $this->app->langPath('vendor/irpayment'),
+            __DIR__.'/../config/irpayment.php' => config_path('irpayment.php'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/irpayment'),
+        ], 'irpayment');
     }
 
     protected function registerRoutes()
