@@ -21,7 +21,7 @@ class Zarinpal implements OnlineChannel, PaymentDriver
 
     public function title(): string
     {
-        return $this->config->get('title', Lang::get('irpayment::drivers.zarinpal'));
+        return $this->config->get('title', Lang::get('irpayment::drivers.zarinpal.title'));
     }
 
     public function channel(): PaymentChannel
@@ -31,7 +31,7 @@ class Zarinpal implements OnlineChannel, PaymentDriver
 
     public function description(): string
     {
-        return $this->config->get('description', Lang::get('irpayment::drivers.zarinpal'));
+        return $this->config->get('description', Lang::get('irpayment::drivers.zarinpal.description'));
     }
 
     public function CallbackUrl(): string
