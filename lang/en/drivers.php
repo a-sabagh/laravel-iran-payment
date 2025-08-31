@@ -12,12 +12,12 @@ return [
     */
 
     'card_transfer' => [
-        'title' => 'Card-to-Card Transfer',
+        'title' => 'Card Transfer',
         'description' => 'Pay offline by transferring money directly from your card to the merchant’s card.',
     ],
 
     'zarinpal' => [
-        'title' => 'Zarinpal Payment Gateway',
+        'title' => 'Zarinpal',
         'description' => 'Pay securely online via the Zarinpal payment gateway.',
     ],
 
