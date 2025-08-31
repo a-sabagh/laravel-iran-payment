@@ -55,6 +55,8 @@ class ZarinpalPaymentVerifyTest extends TestCase
                 $errors->has('status') &&
                 $errors->missing('authority');
         });
+
+        Http::assertNothingSent();
     }
 
     public function test_payment_verification_authority_key_invalid(): void
@@ -73,6 +75,8 @@ class ZarinpalPaymentVerifyTest extends TestCase
                 $errors->missing('status') &&
                 $errors->has('authority');
         });
+
+        Http::assertNothingSent();
     }
 
     public function test_payment_verification_success(): void
@@ -151,16 +155,12 @@ class ZarinpalPaymentVerifyTest extends TestCase
                     $actualPayment->status == PaymentStatus::FAILED;
             },
         ]);
+
+        Http::assertSentCount(1);
     }
 
     public function test_payment_verification_cancelled(): void
     {
-        $requestResponse = file_get_contents(package_path('tests/fake/zarinpal/verify.json'));
-
-        Http::fake([
-            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
-        ]);
-
         $order = Order::factory()->create();
 
         $payment = Payment::factory()
