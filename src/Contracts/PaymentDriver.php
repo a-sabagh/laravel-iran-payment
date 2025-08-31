@@ -2,7 +2,7 @@
 
 namespace IRPayment\Contracts;
 
-use IRPayment\Models\Payment;
+use IRPayment\Enums\PaymentChannel;
 
 interface PaymentDriver
 {
@@ -10,7 +10,5 @@ interface PaymentDriver
 
     public function description(): string;
 
-    public function process(Payment $payment);
-
-    public function verify(int $amount, string $authorityKey);
+    public function channel(): PaymentChannel;
 }
