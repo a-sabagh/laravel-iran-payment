@@ -36,8 +36,6 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_status_invalid(): void
     {
-        $this->withoutExceptionHandling();
-
         $order = Order::factory()->create();
 
         $payment = Payment::factory()
@@ -61,7 +59,6 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_authority_key_invalid(): void
     {
-        $this->withoutExceptionHandling();
         $authorityKey = fake()->unique()->regexify('A00000[A-Z0-9a-z]{32,40}');
 
         $requestData = [
