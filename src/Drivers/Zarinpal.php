@@ -5,13 +5,15 @@ namespace IRPayment\Drivers;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
+use IRPayment\Contracts\OnlineChannel;
 use IRPayment\Contracts\PaymentDriver;
 use IRPayment\DTO\ProcessResponseValueObject;
 use IRPayment\DTO\VerificationValueObject;
+use IRPayment\Enums\PaymentChannel;
 use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Models\Payment;
 
-class Zarinpal implements PaymentDriver
+class Zarinpal implements OnlineChannel, PaymentDriver
 {
     public function __construct(
         protected Collection $config
@@ -20,6 +22,11 @@ class Zarinpal implements PaymentDriver
     public function title(): string
     {
         return $this->config->get('title', Lang::get('irpayment::drivers.zarinpal'));
+    }
+
+    public function channel(): PaymentChannel
+    {
+        return PaymentChannel::ONLINE;
     }
 
     public function description(): string
