@@ -56,4 +56,11 @@ class PaymentFactory extends Factory
             'status' => PaymentStatus::PROCESSING,
         ]);
     }
+
+    public function complete(): static
+    {
+        return $this->state([
+            'status' => PaymentStatus::COMPLETE,
+        ]);
+    }
 }
