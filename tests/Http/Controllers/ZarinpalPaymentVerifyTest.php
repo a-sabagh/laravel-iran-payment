@@ -10,7 +10,7 @@ use Illuminate\Support\MessageBag;
 use IRPayment\DTO\VerificationValueObject;
 use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
-use IRPayment\Events\PaymentCancelled;
+use IRPayment\Events\PaymentCanceled;
 use IRPayment\Events\PaymentFailed;
 use IRPayment\Events\PaymentVerified;
 use IRPayment\Models\Payment;
@@ -62,7 +62,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
         Http::assertNothingSent();
 
-        Event::assertNotDispatched(PaymentCancelled::class);
+        Event::assertNotDispatched(PaymentCanceled::class);
         Event::assertNotDispatched(PaymentFailed::class);
         Event::assertNotDispatched(PaymentVerified::class);
     }
@@ -86,7 +86,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
         Http::assertNothingSent();
 
-        Event::assertNotDispatched(PaymentCancelled::class);
+        Event::assertNotDispatched(PaymentCanceled::class);
         Event::assertNotDispatched(PaymentFailed::class);
         Event::assertNotDispatched(PaymentVerified::class);
     }
@@ -180,7 +180,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
         });
     }
 
-    public function test_payment_verification_cancelled(): void
+    public function test_payment_verification_canceled(): void
     {
         $order = Order::factory()->create();
 
@@ -205,7 +205,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
         $this->assertSame($payment->status, PaymentStatus::CANCELED);
 
         Http::assertNothingSent();
-        Event::assertDispatched(PaymentCancelled::class);
+        Event::assertDispatched(PaymentCanceled::class);
     }
 
     public function test_prevent_cancelling_payment_which_already_completed(): void

@@ -11,7 +11,7 @@ use Illuminate\Validation\Validator as ValidationValidator;
 use IRPayment\DTO\VerificationValueObject;
 use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
-use IRPayment\Events\PaymentCancelled;
+use IRPayment\Events\PaymentCanceled;
 use IRPayment\Events\PaymentFailed;
 use IRPayment\Events\PaymentVerified;
 use IRPayment\Facades\IRPayment;
@@ -37,7 +37,7 @@ class ZarinpalPaymentController
         $status = $request->enum('status', ZarinpalVerificationStatus::class);
 
         if ($status == ZarinpalVerificationStatus::CANCELED) {
-            return $this->handleCancelledPayment($payment);
+            return $this->handleCanceledPayment($payment);
         }
 
         $amount = $payment->amount;
@@ -66,13 +66,13 @@ class ZarinpalPaymentController
     }
 
     /**
-     * Handle a cancelled payment without driver verification.
+     * Handle a canceled payment without driver verification.
      *
      * Updates the payment status to "CANCELED" and
-     * renders the "cancelled" view.
+     * renders the "canceled" view.
      * renders the "invalid" view if payment already completed without modification on payment
      */
-    private function handleCancelledPayment(Payment $payment): View
+    private function handleCanceledPayment(Payment $payment): View
     {
         if ($payment->status == PaymentStatus::COMPLETE) {
             $errors = new MessageBag([
@@ -84,9 +84,9 @@ class ZarinpalPaymentController
 
         $payment->update(['status' => PaymentStatus::CANCELED]);
 
-        event(new PaymentCancelled($payment));
+        event(new PaymentCanceled($payment));
 
-        return view('irpayment::cancelled', compact('payment'));
+        return view('irpayment::canceled', compact('payment'));
     }
 
     /**

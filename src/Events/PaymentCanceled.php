@@ -5,7 +5,7 @@ namespace IRPayment\Events;
 use Illuminate\Foundation\Bus\Dispatchable;
 use IRPayment\Models\Payment;
 
-class PaymentCancelled
+class PaymentCanceled
 {
     use Dispatchable;
 
