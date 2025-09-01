@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\MessageBag;
+use IRPayment\DTO\VerificationValueObject;
 use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
+use IRPayment\Events\PaymentCancelled;
+use IRPayment\Events\PaymentFailed;
+use IRPayment\Events\PaymentVerified;
 use IRPayment\Models\Payment;
 use IRPayment\Tests\TestCase;
 use Workbench\App\Models\Order;
@@ -57,6 +61,10 @@ class ZarinpalPaymentVerifyTest extends TestCase
         });
 
         Http::assertNothingSent();
+
+        Event::assertNotDispatched(PaymentCancelled::class);
+        Event::assertNotDispatched(PaymentFailed::class);
+        Event::assertNotDispatched(PaymentVerified::class);
     }
 
     public function test_payment_verification_authority_key_invalid(): void
@@ -77,6 +85,10 @@ class ZarinpalPaymentVerifyTest extends TestCase
         });
 
         Http::assertNothingSent();
+
+        Event::assertNotDispatched(PaymentCancelled::class);
+        Event::assertNotDispatched(PaymentFailed::class);
+        Event::assertNotDispatched(PaymentVerified::class);
     }
 
     public function test_payment_verification_success(): void
@@ -118,10 +130,11 @@ class ZarinpalPaymentVerifyTest extends TestCase
             'verification', fn ($verification) => $verification->message == 'Success'
         );
 
-        Event::assertDispatched(\IRPayment\Events\PaymentVerified::class, function ($event) use ($payment) {
-            return $event->payment->is($payment);
+        Event::assertDispatched(PaymentVerified::class, function ($event) use ($payment) {
+            return $event->payment->is($payment)
+                && $event->verification instanceof VerificationValueObject
+                && $event->verification->code == 100;
         });
-
     }
 
     public function test_payment_verification_failed(): void
@@ -157,6 +170,14 @@ class ZarinpalPaymentVerifyTest extends TestCase
         ]);
 
         Http::assertSentCount(1);
+
+        Event::assertDispatched(PaymentFailed::class, function ($event) use ($payment) {
+            $payment->refresh();
+
+            return $event->payment->is($payment)
+                && $event->verification instanceof VerificationValueObject
+                && $event->verification->code == -61;
+        });
     }
 
     public function test_payment_verification_cancelled(): void
@@ -184,6 +205,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
         $this->assertSame($payment->status, PaymentStatus::CANCELED);
 
         Http::assertNothingSent();
+        Event::assertDispatched(PaymentCancelled::class);
     }
 
     public function test_prevent_cancelling_payment_which_already_completed(): void
