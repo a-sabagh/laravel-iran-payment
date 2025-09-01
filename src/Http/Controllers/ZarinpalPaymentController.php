@@ -11,6 +11,8 @@ use Illuminate\Validation\Validator as ValidationValidator;
 use IRPayment\DTO\VerificationValueObject;
 use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
+use IRPayment\Events\PaymentCancelled;
+use IRPayment\Events\PaymentFailed;
 use IRPayment\Events\PaymentVerified;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
@@ -82,6 +84,8 @@ class ZarinpalPaymentController
 
         $payment->update(['status' => PaymentStatus::CANCELED]);
 
+        event(new PaymentCancelled($payment));
+
         return view('irpayment::cancelled', compact('payment'));
     }
 
@@ -98,6 +102,8 @@ class ZarinpalPaymentController
             'status' => PaymentStatus::FAILED,
         ]);
 
+        event(new PaymentFailed($payment, $verification));
+
         return view('irpayment::invalid', compact('payment', 'verification'));
     }
 
@@ -112,7 +118,7 @@ class ZarinpalPaymentController
     {
         $payment->update($verification->toArray());
 
-        event(new PaymentVerified($payment));
+        event(new PaymentVerified($payment, $verification));
 
         return view('irpayment::verify', compact('payment', 'verification'));
     }
