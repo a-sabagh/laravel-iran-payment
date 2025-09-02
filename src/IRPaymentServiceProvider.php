@@ -31,6 +31,10 @@ class IRPaymentServiceProvider extends ServiceProvider
             __DIR__.'/../config/irpayment.php' => config_path('irpayment.php'),
             __DIR__.'/../resources/views' => resource_path('views/vendor/irpayment'),
         ], 'irpayment');
+
+        $this->publishesMigrations([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ]);
     }
 
     protected function registerRoutes()
