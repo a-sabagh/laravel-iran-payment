@@ -23,6 +23,7 @@ class Payment extends Model
         'message',
         'card_hash',
         'card_mask',
+        'description',
         'authority_key',
         'reference_id',
         'amount',
