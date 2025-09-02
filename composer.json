@@ -25,11 +25,14 @@
         "psr-4": {
             "IRPayment\\": "src/",
             "IRPayment\\Database\\Factories\\": "database/factories/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "IRPayment\\Tests\\": "tests/", 
+            "IRPayment\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/"
         }
