@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('card_hash', 64)->nullable();
             $table->string('card_mask', 20)->nullable();
             $table->string('authority_key', 100)->unique()->nullable();
-            $table->string('reference_id', 20)->unique();
+            $table->string('reference_id', 20)->unique()->nullable();
             $table->unsignedBigInteger('amount');
             $table->enum('status', array_column(PaymentStatus::cases(), 'value'))->default('pending');
             $table->json('metadata')->nullable();
