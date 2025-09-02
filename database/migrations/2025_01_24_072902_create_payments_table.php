@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->morphs('paymentable');
-            $table->unsignedSmallInteger('code');
+            $table->unsignedSmallInteger('code')->nullable();
             $table->enum('payment_channel', array_column(PaymentChannel::cases(), 'value'))->default('offline');
             $table->string('payment_method')->nullable();
             $table->string('description');
             $table->string('card_hash', 64)->nullable();
-            $table->string('card_mask', 20);
+            $table->string('card_mask', 20)->nullable();
             $table->string('authority_key', 100)->unique()->nullable();
             $table->string('reference_id', 20)->unique();
             $table->unsignedBigInteger('amount');
