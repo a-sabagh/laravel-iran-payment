@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->morphs('paymentable');
-            $table->unsignedSmallInteger('code')->nullable();
+            $table->mediumInteger('code')->nullable();
             $table->enum('payment_channel', array_column(PaymentChannel::cases(), 'value'))->default('offline');
             $table->string('payment_method')->nullable();
             $table->string('description');
