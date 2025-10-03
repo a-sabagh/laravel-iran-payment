@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 enum PaymentStatus: string
 {
-    use Translatable, Badgeable;
+    use Badgeable, Translatable;
 
     public function getBadgeCollection(): Collection
     {
