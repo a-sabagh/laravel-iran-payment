@@ -16,7 +16,7 @@ class PaymentFactory extends Factory
         return [
             'code' => fake()->numberBetween(100, 999),
             'payment_channel' => fake()->randomElement(array_column(PaymentChannel::cases(), 'value')),
-            'payment_method' => null,
+            'payment_method' => fake()->randomElement(['zarinpal', 'card_transfer']),
             'description' => fake()->sentence(),
             'card_hash' => fake()->sha256(),
             'phone' => fake()->numerify('091########'),
