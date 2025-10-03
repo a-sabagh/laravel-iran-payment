@@ -23,7 +23,7 @@ enum PaymentStatus: string
 
     public function namespace(): string
     {
-        return 'irpayment';
+        return 'irpayment::';
     }
 
     case PENDING = 'pending';
