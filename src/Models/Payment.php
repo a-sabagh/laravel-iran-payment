@@ -6,6 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use IRPayment\Casts\PaymentMethodCast;
 use IRPayment\Database\Factories\PaymentFactory;
 use IRPayment\Enums\PaymentChannel;
 use IRPayment\Enums\PaymentStatus;
@@ -35,6 +36,7 @@ class Payment extends Model
         'code' => 'integer',
         'payment_channel' => PaymentChannel::class,
         'status' => PaymentStatus::class,
+        'payment_method' => PaymentMethodCast::class,
         'amount' => 'integer',
         'metadata' => 'array',
     ];
