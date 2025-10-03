@@ -4,8 +4,59 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6323b8a39295d9d8b9ae0ae7ce23f8b0",
+    "content-hash": "cc5481eb448484e5631f31ddfa25998d",
     "packages": [
+        {
+            "name": "a-sabagh/laravel-enhance-enums",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/a-sabagh/laravel-enhance-enums.git",
+                "reference": "f48731d95af62cbf4314076d15ff75571346099c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/a-sabagh/laravel-enhance-enums/zipball/f48731d95af62cbf4314076d15ff75571346099c",
+                "reference": "f48731d95af62cbf4314076d15ff75571346099c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.24",
+                "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "phpunit/phpunit": "^8.0|^9.3|^10.4|^11.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Enhance\\Enums\\EEnumsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Enhance\\Enums\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "a-sabagh",
+                    "email": "a.sabagh72@gmail.com"
+                }
+            ],
+            "description": "A lightweight Laravel package that adds a reusable Translatable trait for handling model translations with clean, consistent syntax.",
+            "support": {
+                "issues": "https://github.com/a-sabagh/laravel-enhance-enums/issues",
+                "source": "https://github.com/a-sabagh/laravel-enhance-enums/tree/main"
+            },
+            "time": "2025-10-02T13:08:32+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.13.1",
@@ -8994,7 +9045,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "a-sabagh/laravel-enhance-enums": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
