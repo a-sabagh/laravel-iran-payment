@@ -32,4 +32,14 @@ class PaymentMethodValueObject
     {
         return $this->paymentMethodDriver;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->paymentMethodDriver,
+            'title' => $this->title,
+            'description' => $this->description,
+            'channel' => $this->channel,
+        ];
+    }
 }
