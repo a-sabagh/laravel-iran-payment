@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('payment_channel', array_column(PaymentChannel::cases(), 'value'))->default('offline');
             $table->string('payment_method')->nullable();
             $table->string('description');
+            $table->string('phone')->nullable();
             $table->string('card_hash', 64)->nullable();
             $table->string('card_mask', 20)->nullable();
             $table->string('authority_key', 100)->unique()->nullable();
