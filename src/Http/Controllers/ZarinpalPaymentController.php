@@ -5,20 +5,12 @@ namespace IRPayment\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator as ValidationValidator;
-use IRPayment\DTO\VerificationValueObject;
-use IRPayment\Enums\PaymentStatus;
 use IRPayment\Enums\ZarinpalVerificationStatus;
-use IRPayment\Events\PaymentCanceled;
-use IRPayment\Events\PaymentFailed;
-use IRPayment\Events\PaymentVerified;
 use IRPayment\Facades\IRPayment;
-use IRPayment\Models\Payment;
 use IRPayment\Repositories\PaymentRepository;
 
-class ZarinpalPaymentController
+class ZarinpalPaymentController extends Controller
 {
     public function verify(Request $request, PaymentRepository $paymentRepo): View
     {
@@ -50,76 +42,5 @@ class ZarinpalPaymentController
         }
 
         return $this->handleVerifiedPayment($payment, $verification);
-    }
-
-    /**
-     * Handle an invalid verification request. no modification on payment
-     *
-     * Renders an "invalid" view with validation errors.
-     * No Actions on Payment
-     */
-    private function handleInvalidRequest(ValidationValidator $validator): View
-    {
-        $errors = $validator->errors();
-
-        return view('irpayment::invalid', compact('errors'));
-    }
-
-    /**
-     * Handle a canceled payment without driver verification.
-     *
-     * Updates the payment status to "CANCELED" and
-     * renders the "canceled" view.
-     * renders the "invalid" view if payment already completed without modification on payment
-     */
-    private function handleCanceledPayment(Payment $payment): View
-    {
-        if ($payment->status == PaymentStatus::COMPLETE) {
-            $errors = new MessageBag([
-                'payment' => __('irpayment::messages.payment.already_completed'),
-            ]);
-
-            return view('irpayment::invalid', compact('errors'));
-        }
-
-        $payment->update(['status' => PaymentStatus::CANCELED]);
-
-        event(new PaymentCanceled($payment));
-
-        return view('irpayment::canceled', compact('payment'));
-    }
-
-    /**
-     * Handle a failed payment after driver verification attempt.
-     *
-     * Updates the payment status to "FAILED" along with the error code,
-     * and renders the "invalid" view with payment and verification details.
-     */
-    private function handleFailedPayment(Payment $payment, VerificationValueObject $verification): View
-    {
-        $payment->update([
-            'code' => $verification->code,
-            'status' => PaymentStatus::FAILED,
-        ]);
-
-        event(new PaymentFailed($payment, $verification));
-
-        return view('irpayment::invalid', compact('payment', 'verification'));
-    }
-
-    /**
-     * Handle a successfully verified payment.
-     *
-     * Updates the payment with verification value object,
-     * dispatches the PaymentVerified event,
-     * renders the "verify" view with payment and verification data.
-     */
-    private function handleVerifiedPayment(Payment $payment, VerificationValueObject $verification): View
-    {
-        $payment->update($verification->toArray());
-
-        event(new PaymentVerified($payment, $verification));
-
-        return view('irpayment::verify', compact('payment', 'verification'));
     }
 }
