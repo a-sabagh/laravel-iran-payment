@@ -26,6 +26,9 @@ return [
         'zarinpal' => [
             'merchant_id' => env('IRPYMENT_ZARINPAL_MERCHANT_ID', ''),
         ],
+        'payping' => [
+            'merchant_id' => env('IRPYMENT_PAYPING_TOKEN', ''),
+        ],
     ],
 
 ];
