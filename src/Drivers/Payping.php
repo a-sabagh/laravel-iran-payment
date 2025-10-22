@@ -37,7 +37,7 @@ class Payping implements OnlineChannel, PaymentDriver
         return $responseVO;
     }
 
-    protected function pay(Payment $payment): int
+    protected function pay(Payment $payment): string
     {
         $url = 'https://api.payping.ir/v3/pay';
 

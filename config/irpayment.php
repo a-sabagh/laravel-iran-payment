@@ -25,9 +25,11 @@ return [
     'drivers' => [
         'zarinpal' => [
             'merchant_id' => env('IRPYMENT_ZARINPAL_MERCHANT_ID', ''),
+            'currency' => 'IRT',
         ],
         'payping' => [
-            'merchant_id' => env('IRPYMENT_PAYPING_TOKEN', ''),
+            'token' => env('IRPYMENT_PAYPING_TOKEN', ''),
+            'currency' => 'IRT',
         ],
     ],
 
