@@ -1,0 +1,8 @@
+{
+    "paymentCode": "155",
+    "url": "https://example.com/payment/papying/verify",
+    "amount": 1555000,
+    "payerWage": 0,
+    "businessWage": 0,
+    "gatewayAmount": 0
+}
