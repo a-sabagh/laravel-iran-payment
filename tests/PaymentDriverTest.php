@@ -3,6 +3,7 @@
 namespace IRPayment\Tests;
 
 use IRPayment\Drivers\CardTransfer;
+use IRPayment\Drivers\Payping;
 use IRPayment\Drivers\Zarinpal;
 use IRPayment\Facades\IRPayment;
 use IRPayment\PaymentDriverManager;
@@ -15,6 +16,13 @@ class PaymentDriverTest extends TestCase
         $zarinpal = $this->app->make(PaymentDriverManager::class)->driver('zarinpal');
 
         $this->assertInstanceOf(Zarinpal::class, $zarinpal);
+    }
+
+    public function test_payment_driver_can_instanciate_payping(): void
+    {
+        $payping = $this->app->make(PaymentDriverManager::class)->driver('payping');
+
+        $this->assertInstanceOf(Payping::class, $payping);
     }
 
     public function test_payment_facade_room_object(): void
