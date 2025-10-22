@@ -15,7 +15,7 @@ class PaymentDriverImplementionTest extends TestCase
         $this->assertSame('Zarinpal', $zarinpalPaymentDriver->title());
         $this->assertSame('Pay securely online via the Zarinpal payment gateway.', $zarinpalPaymentDriver->description());
 
-        $this->app->setLocale('fa');
+        $this->app->setLocale('fa_IR');
         $this->assertSame('زرین‌پال', $zarinpalPaymentDriver->title());
     }
 
