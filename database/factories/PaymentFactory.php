@@ -46,7 +46,7 @@ class PaymentFactory extends Factory
     {
         return $this->state([
             'status' => PaymentStatus::PENDING,
-            'autorithy_key' => null,
+            'authority_key' => null,
             'code' => 0,
         ]);
     }

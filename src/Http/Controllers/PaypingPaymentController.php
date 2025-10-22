@@ -19,8 +19,8 @@ class PaypingPaymentController extends Controller
 
         $validator = Validator::make($request->all(), [
             'data' => ['required', 'array'],
-            'data.paymentCode' => ['required', 'numeric'],
-            'data.clientRefId' => ['required', 'numeric', 'exists:payments.id'],
+            'data.paymentCode' => ['required', 'string'],
+            'data.clientRefId' => ['required', 'numeric', 'exists:payments,id'],
             'status' => ['required', 'boolean'],
         ]);
 
@@ -31,7 +31,7 @@ class PaypingPaymentController extends Controller
         $authorityKey = $paymentCode = $request->integer('data.paymentCode');
         $payment = $paymentRepo->findByAuthorityKey($authorityKey);
 
-        if (! $request->status) {
+        if (!!! $request->status) {
             return $this->handleCanceledPayment($payment);
         }
 
