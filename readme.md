@@ -35,6 +35,7 @@ A developer-friendly Laravel package that simplifies integration with Iranian pa
 **Supported gateways (update this list):**
 
 - [x] Zarinpal
+- [x] Payping
 - [ ] …add more
 
 ---
