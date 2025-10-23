@@ -31,15 +31,15 @@ class PaypingPaymentController extends Controller
         $authorityKey = $paymentCode = $request->integer('data.paymentCode');
         $payment = $paymentRepo->findByAuthorityKey($authorityKey);
 
-        if (!!! $request->status) {
+        if (! (bool) $request->status) {
             return $this->handleCanceledPayment($payment);
         }
 
         $amount = $payment->amount;
-        $paymentRefId = $request->integer('data.paymentRefId');
+        $clientRefId = $request->integer('data.clientRefId');
 
         $verification = IRPayment::driver('payping')
-            ->verify($amount, $paymentRefId, $paymentCode);
+            ->verify($amount, $clientRefId, $paymentCode);
 
         if ($verification->isFailed()) {
             return $this->handleFailedPayment($payment, $verification);

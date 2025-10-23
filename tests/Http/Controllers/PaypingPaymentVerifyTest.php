@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\MessageBag;
+use IRPayment\DTO\VerificationValueObject;
 use IRPayment\Enums\PaymentStatus;
 use IRPayment\Events\PaymentCanceled;
 use IRPayment\Events\PaymentFailed;
@@ -152,5 +153,52 @@ class PaypingPaymentVerifyTest extends TestCase
         Event::assertNotDispatched(PaymentCanceled::class);
         Event::assertNotDispatched(PaymentFailed::class);
         Event::assertNotDispatched(PaymentVerified::class);
+    }
+
+    public function test_payment_verification_status_verification_failed(): void
+    {
+        $paymentCode = (string) fake()->randomNumber();
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->pending()
+            ->for($order, 'paymentable')
+            ->state(['authority_key' => $paymentCode])
+            ->create();
+
+        $requestData = [
+            'status' => '1',
+            'errorCode' => 110,
+            'data' => json_encode([
+                'clientRefId' => $payment->id,
+                'paymentCode' => $paymentCode,
+                'amount' => $payment->amount,
+                'gatewayAmount' => $payment->amount,
+
+            ]),
+        ];
+
+        // mock verify request
+        $requestResponse = file_get_contents(workbench_path('mock/payping/verify-400.json'));
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 400),
+        ]);
+
+        $response = $this->get(route('irpayment.payment.payping.verify', $requestData));
+
+        $payment->refresh();
+
+        Http::assertSentCount(1);
+
+        $this->assertSame($payment->status, PaymentStatus::FAILED);
+
+        $response->assertViewIs('irpayment::invalid');
+        $response->assertViewHasAll([
+            'payment' => fn (Payment $actualPayment) => $actualPayment->is($payment),
+            'verification' => fn (VerificationValueObject $verification) => ! $verification->cardHash
+                && ! $verification->cardMask
+                && ! $verification->referenceId,
+        ]);
     }
 }

@@ -86,8 +86,10 @@ class Payping implements OnlineChannel, PaymentDriver
             ->post($url, $args);
 
         $responseBody = $httpResponse->json();
+
         $responseCode = $httpResponse->status();
-        $code = $httpResponse->assertOk() ? 100 : $responseCode;
+        $code = $httpResponse->ok() ? 100 : $responseCode;
+
         $message = trans("irpayment::messages.payping.{$responseCode}");
 
         return new VerificationValueObject(
