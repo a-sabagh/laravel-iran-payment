@@ -100,8 +100,8 @@ class Payping implements OnlineChannel, PaymentDriver
         return new VerificationValueObject(
             code: $code,
             message: $message,
-            cardHash: data_get($responseBody, 'cardNumber'),
-            cardMask: data_get($responseBody, 'cardHashPan'),
+            cardHash: data_get($responseBody, 'cardHashPan'),
+            cardMask: data_get($responseBody, 'cardNumber'),
             referenceId: data_get($responseBody, 'paymentRefId'),
         );
     }

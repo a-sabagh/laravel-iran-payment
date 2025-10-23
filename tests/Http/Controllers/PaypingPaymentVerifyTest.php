@@ -243,7 +243,64 @@ class PaypingPaymentVerifyTest extends TestCase
         $response->assertViewHasAll([
             'payment' => fn (Payment $actualPayment) => $actualPayment->is($payment),
             'verification' => fn (VerificationValueObject $vo) => $vo->code == 101
-                && $vo->message == trans('irpayment::messages.payping.409'),
+                && $vo->message == trans('irpayment::messages.payping.409')
+                && ! $vo->cardHash
+                && ! $vo->cardMask
+                && ! $vo->referenceId,
+        ]);
+
+        Http::assertSentCount(1);
+
+        Event::assertNotDispatched(PaymentCanceled::class);
+        Event::assertNotDispatched(PaymentFailed::class);
+        Event::assertDispatched(PaymentVerified::class);
+    }
+
+    public function test_payment_verification_status_verfied(): void
+    {
+        $this->app->setLocale('fa_IR');
+
+        $paymentCode = (string) fake()->randomNumber();
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->pending()
+            ->for($order, 'paymentable')
+            ->state(['authority_key' => $paymentCode])
+            ->create();
+
+        $requestData = [
+            'status' => '1',
+            'errorCode' => 110,
+            'data' => json_encode([
+                'clientRefId' => $payment->id,
+                'paymentCode' => $paymentCode,
+                'amount' => $payment->amount,
+                'gatewayAmount' => $payment->amount,
+
+            ]),
+        ];
+        // mock verify request
+        $requestResponse = file_get_contents(workbench_path('mock/payping/verify-200.json'));
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
+        ]);
+
+        $response = $this->get(route('irpayment.payment.payping.verify', $requestData));
+
+        $payment->refresh();
+
+        $this->assertSame($payment->status, PaymentStatus::COMPLETE);
+
+        $response->assertViewIs('irpayment::verify');
+        $response->assertViewHasAll([
+            'payment' => fn (Payment $actualPayment) => $actualPayment->is($payment),
+            'verification' => fn (VerificationValueObject $vo) => $vo->code == 100
+                && $vo->message == 'عملیات موفق است.'
+                && $vo->cardHash == '1EBE3EBEBE35C7EC0F8D6EE4F2F859107A87822CA179BC9528767EA7B5489B69'
+                && $vo->cardMask == '502229******5995'
+                && $vo->referenceId == 100052698740,
         ]);
 
         Http::assertSentCount(1);
