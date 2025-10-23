@@ -22,6 +22,16 @@ class VerificationValueObject
         return ! $this->isSuccess();
     }
 
+    public function isVerified(): bool
+    {
+        return ! 100 == $this->code;
+    }
+
+    public function isAlreadyVerified(): bool
+    {
+        return ! 101 == $this->code;
+    }
+
     public function toArray(): array
     {
         return [
