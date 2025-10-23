@@ -114,4 +114,43 @@ class PaypingPaymentVerifyTest extends TestCase
         Event::assertNotDispatched(PaymentFailed::class);
         Event::assertNotDispatched(PaymentVerified::class);
     }
+
+    public function test_payment_verification_status_already_complete(): void
+    {
+        $paymentCode = (string) fake()->randomNumber();
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->complete()
+            ->for($order, 'paymentable')
+            ->state(['authority_key' => $paymentCode])
+            ->create();
+
+        $requestData = [
+            'status' => '0',
+            'errorCode' => 110,
+            'data' => json_encode([
+                'clientRefId' => $payment->id,
+                'paymentCode' => $paymentCode,
+                'amount' => $payment->amount,
+                'gatewayAmount' => $payment->amount,
+
+            ]),
+        ];
+
+        $response = $this->get(route('irpayment.payment.payping.verify', $requestData));
+
+        $payment->refresh();
+
+        $this->assertSame($payment->status, PaymentStatus::COMPLETE);
+
+        $response->assertViewIs('irpayment::invalid');
+        $response->assertViewHas('errors', fn (MessageBag $errors) => $errors->has('payment'));
+
+        Http::assertNothingSent();
+
+        Event::assertNotDispatched(PaymentCanceled::class);
+        Event::assertNotDispatched(PaymentFailed::class);
+        Event::assertNotDispatched(PaymentVerified::class);
+    }
 }
