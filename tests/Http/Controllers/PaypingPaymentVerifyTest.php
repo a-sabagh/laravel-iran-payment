@@ -13,6 +13,7 @@ use IRPayment\Events\PaymentFailed;
 use IRPayment\Events\PaymentVerified;
 use IRPayment\Models\Payment;
 use IRPayment\Tests\TestCase;
+use PHPUnit\Framework\Attributes\TestDox;
 use Workbench\App\Models\Order;
 
 use function Orchestra\Testbench\workbench_path;
@@ -200,5 +201,55 @@ class PaypingPaymentVerifyTest extends TestCase
                 && ! $verification->cardMask
                 && ! $verification->referenceId,
         ]);
+    }
+
+    #[TestDox('The transaction has already been verified')]
+    public function test_payment_verification_status_conflict(): void
+    {
+        $paymentCode = (string) fake()->randomNumber();
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->pending()
+            ->for($order, 'paymentable')
+            ->state(['authority_key' => $paymentCode])
+            ->create();
+
+        $requestData = [
+            'status' => '1',
+            'errorCode' => 110,
+            'data' => json_encode([
+                'clientRefId' => $payment->id,
+                'paymentCode' => $paymentCode,
+                'amount' => $payment->amount,
+                'gatewayAmount' => $payment->amount,
+
+            ]),
+        ];
+        // mock verify request
+        $requestResponse = file_get_contents(workbench_path('mock/payping/verify-409.json'));
+
+        Http::fake([
+            'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 409),
+        ]);
+
+        $response = $this->get(route('irpayment.payment.payping.verify', $requestData));
+
+        $payment->refresh();
+
+        $this->assertSame($payment->status, PaymentStatus::COMPLETE);
+
+        $response->assertViewIs('irpayment::verify');
+        $response->assertViewHasAll([
+            'payment' => fn (Payment $actualPayment) => $actualPayment->is($payment),
+            'verification' => fn (VerificationValueObject $vo) => $vo->code == 101
+                && $vo->message == trans('irpayment::messages.payping.409'),
+        ]);
+
+        Http::assertSentCount(1);
+
+        Event::assertNotDispatched(PaymentCanceled::class);
+        Event::assertNotDispatched(PaymentFailed::class);
+        Event::assertDispatched(PaymentVerified::class);
     }
 }

@@ -45,6 +45,10 @@ class PaypingPaymentController extends Controller
             return $this->handleFailedPayment($payment, $verification);
         }
 
+        if ($verification->isAlreadyVerified()) {
+            return $this->handleAlreadyVerifiedPayment($payment, $verification);
+        }
+
         return $this->handleVerifiedPayment($payment, $verification);
     }
 }

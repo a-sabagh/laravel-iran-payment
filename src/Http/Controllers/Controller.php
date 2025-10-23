@@ -78,7 +78,26 @@ class Controller
      */
     protected function handleVerifiedPayment(Payment $payment, VerificationValueObject $verification): View
     {
-        $payment->update($verification->toArray());
+        $payment->update([
+            ...$verification->toArray(),
+            'status' => PaymentStatus::COMPLETE,
+        ]);
+
+        event(new PaymentVerified($payment, $verification));
+
+        return view('irpayment::verify', compact('payment', 'verification'));
+    }
+
+    /**
+     * Handle a payment that has already been verified previously.
+     *
+     * This method is invoked when the payment provider (gateway)
+     * reports a already successful verification, but the local payment
+     * record must be complete even has either of available statuses
+     */
+    protected function handleAlreadyVerifiedPayment(Payment $payment, VerificationValueObject $verification): View
+    {
+        $payment->update(['status' => PaymentStatus::COMPLETE]);
 
         event(new PaymentVerified($payment, $verification));
 

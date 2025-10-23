@@ -1,0 +1,22 @@
+{
+  "type": "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8",
+  "title": "ConflictException",
+  "status": 409,
+  "instance": "/v3/pay/verify",
+  "paypingTraceId": "0HN50NTIAS004:00000002",
+  "metaData": {
+    "code": 110,
+    "message": {
+      "Amount": 1000,
+      "PayerWage": 10,
+      "BusinessWage": 0,
+      "GatewayAmount": 1010,
+      "CardNumber": "603799******1234",
+      "CardHashPan": "be7eec45143dea50c39f1559640c1273",
+      "ClientRefId": "123",
+      "PaymentRefId": 1111004003,
+      "Code": "01K2YQYESEQGNMCVFPQ9VC96YF",
+      "PayedDate": "2024-08-03 10:30:00Z"
+    }
+  }
+}

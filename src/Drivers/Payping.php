@@ -88,7 +88,12 @@ class Payping implements OnlineChannel, PaymentDriver
         $responseBody = $httpResponse->json();
 
         $responseCode = $httpResponse->status();
-        $code = $httpResponse->ok() ? 100 : $responseCode;
+
+        $code = match (true) {
+            $httpResponse->ok() => 100,
+            $httpResponse->conflict() && data_get($responseBody, 'metaData.code') === 110 => 101,
+            default => $responseCode,
+        };
 
         $message = trans("irpayment::messages.payping.{$responseCode}");
 
