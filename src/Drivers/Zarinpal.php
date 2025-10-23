@@ -88,13 +88,13 @@ class Zarinpal implements OnlineChannel, PaymentDriver
         return $response['data'];
     }
 
-    public function verify(int $amount, string $authorityKey): VerificationValueObject
+    public function verify(int $amount, array $creadentials): VerificationValueObject
     {
         $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
 
         $data = [
             'merchant_id' => $this->config->get('merchant_id'),
-            'authority' => $authorityKey,
+            'authority' => $creadentials['authority_key'],
             'amount' => $amount,
         ];
 

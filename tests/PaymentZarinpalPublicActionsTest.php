@@ -96,7 +96,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         $amount = fake()->numberBetween(1000, 9999);
         $authorityKey = fake()->unique()->regexify('A00000[A-Z0-9a-z]{32,40}');
 
-        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, $authorityKey);
+        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, ['authority_key' => $authorityKey]);
 
         $this->assertInstanceOf(VerificationValueObject::class, $verificationVO);
         $this->assertSame(100, $verificationVO->code);
@@ -120,7 +120,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         $amount = fake()->numberBetween(1000, 9999);
         $authorityKey = fake()->unique()->regexify('A00000[A-Z0-9a-z]{32,40}');
 
-        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, $authorityKey);
+        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, ['authority_key' => $authorityKey]);
 
         $this->assertInstanceOf(VerificationValueObject::class, $verificationVO);
         $this->assertSame(-61, $verificationVO->code);
@@ -144,7 +144,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         $amount = fake()->numberBetween(1000, 9999);
         $authorityKey = fake()->unique()->regexify('A00000[A-Z0-9a-z]{32,40}');
 
-        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, $authorityKey);
+        $verificationVO = IRPayment::driver('zarinpal')->verify($amount, ['authority_key' => $authorityKey]);
 
         $this->assertNull($verificationVO);
     }

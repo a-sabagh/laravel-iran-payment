@@ -35,7 +35,7 @@ class ZarinpalPaymentController extends Controller
         $amount = $payment->amount;
 
         $verification = IRPayment::driver('zarinpal')
-            ->verify($amount, $authorityKey);
+            ->verify($amount, ['authority_key' => $authorityKey]);
 
         if ($verification->isFailed()) {
             return $this->handleFailedPayment($payment, $verification);

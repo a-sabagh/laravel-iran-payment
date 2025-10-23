@@ -68,8 +68,13 @@ class Payping implements OnlineChannel, PaymentDriver
         return $response['paymentCode'];
     }
 
-    public function verify(int $amount, int $paymentRefId, int $paymentCode): VerificationValueObject
+    public function verify(int $amount, array $creadentials): VerificationValueObject
     {
+        [
+            'client_ref_id' => $paymentRefId,
+            'payment_code' => $paymentCode,
+        ] = $creadentials;
+
         $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
 
         $token = $this->config->get('token');

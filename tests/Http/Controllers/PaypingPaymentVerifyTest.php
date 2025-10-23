@@ -158,6 +158,7 @@ class PaypingPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_status_verification_failed(): void
     {
+        $this->withoutExceptionHandling();
         $paymentCode = (string) fake()->randomNumber();
         $order = Order::factory()->create();
 

@@ -39,7 +39,7 @@ class PaypingPaymentController extends Controller
         $clientRefId = $request->integer('data.clientRefId');
 
         $verification = IRPayment::driver('payping')
-            ->verify($amount, $clientRefId, $paymentCode);
+            ->verify($amount, ['client_ref_id' => $clientRefId, 'payment_code' => $paymentCode]);
 
         if ($verification->isFailed()) {
             return $this->handleFailedPayment($payment, $verification);
