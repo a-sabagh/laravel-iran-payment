@@ -29,7 +29,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
 
     public function test_zarinpal_process_payment_with_payment_object(): void
     {
-        $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/request.json');
+        $requestResponse = file_get_contents(workbench_path('mock/zarinpal/request.json'));
 
         Http::fake([
             'https://api.zarinpal.com/pg/v4/payment/request.json' => Http::response($requestResponse, 200),
@@ -70,7 +70,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         $this->expectExceptionMessage(Lang::get('irpayment::messages.zarinpal.-10'));
         $this->expectExceptionMessage('Terminal is not valid, please check merchant_id or ip address.');
 
-        $requestResponseFailed = file_get_contents(__DIR__.'/fake/zarinpal/request-10.json');
+        $requestResponseFailed = file_get_contents(workbench_path('mock/zarinpal/request-10.json'));
 
         Http::fake([
             'https://api.zarinpal.com/pg/v4/payment/request.json' => Http::response($requestResponseFailed, 200),
@@ -87,7 +87,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
 
     public function test_zarinpal_verify_success(): void
     {
-        $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/verify.json');
+        $requestResponse = file_get_contents(workbench_path('mock/zarinpal/verify.json'));
 
         Http::fake([
             'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
@@ -111,7 +111,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
 
     public function test_zarinpal_verify_failed(): void
     {
-        $requestResponse = file_get_contents(__DIR__.'/fake/zarinpal/verify-61.json');
+        $requestResponse = file_get_contents(workbench_path('mock/zarinpal/verify-61.json'));
 
         Http::fake([
             'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),

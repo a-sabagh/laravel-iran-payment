@@ -17,7 +17,6 @@ use IRPayment\Models\Payment;
 use IRPayment\Tests\TestCase;
 use Workbench\App\Models\Order;
 
-use function Orchestra\Testbench\package_path;
 use function Orchestra\Testbench\workbench_path;
 
 class ZarinpalPaymentVerifyTest extends TestCase
@@ -93,7 +92,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_success(): void
     {
-        $requestResponse = file_get_contents(package_path('tests/fake/zarinpal/verify.json'));
+        $requestResponse = file_get_contents(workbench_path('mock/zarinpal/verify.json'));
 
         Http::fake([
             'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),
@@ -139,7 +138,7 @@ class ZarinpalPaymentVerifyTest extends TestCase
 
     public function test_payment_verification_failed(): void
     {
-        $requestResponse = file_get_contents(package_path('tests/fake/zarinpal/verify-61.json'));
+        $requestResponse = file_get_contents(workbench_path('mock/zarinpal/verify-61.json'));
 
         Http::fake([
             'https://api.zarinpal.com/pg/v4/payment/verify.json' => Http::response($requestResponse, 200),

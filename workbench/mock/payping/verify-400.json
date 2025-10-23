@@ -1,0 +1,16 @@
+{
+    "type": "155",
+    "title": "پرداخت شما نامعتبر است",
+    "status": 0,
+    "detail": "string",
+    "instance": "string",
+    "paypingTraceId": "string",
+    "metaData": {
+        "code": 0,
+        "errors": [
+            {
+                "message": "پرداخت شما نامعتبر است"
+            }
+        ]
+    }
+}

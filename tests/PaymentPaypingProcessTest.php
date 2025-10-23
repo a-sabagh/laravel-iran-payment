@@ -37,7 +37,7 @@ class PaymentPaypingProcessTest extends TestCase
             'currency' => 'IRR',
         ]);
         // mock pay request
-        $requestResponse = file_get_contents(__DIR__.'/fake/paping/pay-200.json');
+        $requestResponse = file_get_contents(workbench_path('mock/payping/pay-200.json'));
 
         Http::fake([
             'https://api.payping.ir/v3/pay' => Http::response($requestResponse, 200),
