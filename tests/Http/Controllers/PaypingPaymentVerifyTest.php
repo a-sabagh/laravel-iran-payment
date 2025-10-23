@@ -34,6 +34,48 @@ class PaypingPaymentVerifyTest extends TestCase
         );
     }
 
+    public function test_payment_verification_status_invalid(): void
+    {
+        $paymentCode = (string) fake()->randomNumber();
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->pending()
+            ->for($order, 'paymentable')
+            ->state(['authority_key' => $paymentCode])
+            ->create();
+
+        $requestData = [
+            'status' => '0',
+            'errorCode' => 110,
+            'data' => json_encode([
+                'clientRefId' => fake()->numberBetween(100, 1000),
+                'paymentCode' => $paymentCode,
+                'amount' => $payment->amount,
+                'gatewayAmount' => $payment->amount,
+
+            ]),
+        ];
+
+        $response = $this->get(route('irpayment.payment.payping.verify', $requestData));
+
+        $this->assertSame($payment->status, PaymentStatus::PENDING);
+
+        $response->assertViewIs('irpayment::invalid');
+        $response->assertViewHas(
+            'errors',
+            fn (MessageBag $errors) => $errors->has('data.clientRefId')
+                && $errors->missing('data.paymentCode')
+                && $errors->missing('status')
+        );
+
+        Http::assertNothingSent();
+
+        Event::assertNotDispatched(PaymentCanceled::class);
+        Event::assertNotDispatched(PaymentFailed::class);
+        Event::assertNotDispatched(PaymentVerified::class);
+    }
+
     public function test_payment_verification_status_canceled(): void
     {
         $paymentCode = (string) fake()->randomNumber();
