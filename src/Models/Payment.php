@@ -40,6 +40,7 @@ class Payment extends Model
         'payment_method' => PaymentMethodCast::class,
         'amount' => 'integer',
         'metadata' => 'array',
+        'reference_id' => 'integer',
     ];
 
     public function paymentable(): MorphTo
