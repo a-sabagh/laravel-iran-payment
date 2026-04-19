@@ -53,4 +53,45 @@ return [
         502 => 'عملیات تأیید تراکنش در حال پردازش است؛ لطفاً مجدداً تلاش نمایید.',
         503 => 'سرور موقتاً قادر به پاسخ‌گویی نیست.',
     ],
+
+    'paykan' => [
+        'http' => [
+            '200' => 'عملیات ساخت تراکنش موفق',
+            '400' => 'مشکلی در ارسال درخواست پیش آمده است',
+            '500' => 'خطای درگاه بانکی',
+        ],
+
+        'message' => [
+            'CONFIRMED' => 'پرداخت با موفقیت تایید شد',
+            'ALREADY_PAID' => 'قبلا پرداخت شده است',
+            'INVALID_REQUEST' => 'درخواست نامعتبر (خطا در پارامترهای ورودی)',
+            'INVALID_GATEWAY' => 'درگاه فعال نیست',
+            'RETRY_TOKEN' => 'توکن تکراری است',
+            'AMOUNT_LIMIT_EXCEEDED' => 'مبلغ بیشتر از سقف مجاز درگاه است',
+            'INVALID_REF_NUM' => 'شناسه ref_num معتبر نیست',
+            'BAD_DATA' => 'پارامترهای ارسال شده نامعتبر است',
+            'CANNOT_VERIFY' => 'تراکنش را نمی‌توان وریفای کرد',
+            'VERIFY_FAILED' => 'تراکنش وریفای نشد',
+            'TRX_FAILED' => 'تراکنش ناموفق',
+            'SYSTEM_FAILURE' => 'خطای سامانه',
+            'INVALID_CARD' => 'کارتی که با آن پرداخت انجام شده معتبر نیست',
+        ],
+
+        'code' => [
+            'CONFIRMED' => 200,
+            'ALREADY_PAID' => 208,
+            'INVALID_REQUEST' => 400,
+            'INVALID_GATEWAY' => 503,
+            'RETRY_TOKEN' => 409,
+            'AMOUNT_LIMIT_EXCEEDED' => 403,
+            'INVALID_REF_NUM' => 422,
+            'BAD_DATA' => 422,
+            'CANNOT_VERIFY' => 424,
+            'VERIFY_FAILED' => 424,
+            'TRX_FAILED' => 402,
+            'SYSTEM_FAILURE' => 500,
+            'INVALID_CARD' => 406,
+        ],
+    ],
+
 ];

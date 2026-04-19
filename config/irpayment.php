@@ -31,6 +31,10 @@ return [
             'token' => env('IRPYMENT_PAYPING_TOKEN', ''),
             'currency' => 'IRT',
         ],
+        'paykan' => [
+            'merchant_id' => env('IRPYMENT_PAYKAN_MERCHANT_ID', ''),
+            'currency' => 'IRT',
+        ],
     ],
 
 ];
