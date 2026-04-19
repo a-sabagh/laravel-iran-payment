@@ -6,6 +6,7 @@ use Illuminate\Support\Manager;
 use IRPayment\Contracts\Factory;
 use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Drivers\CardTransfer;
+use IRPayment\Drivers\Paykan;
 use IRPayment\Drivers\Payping;
 use IRPayment\Drivers\Zarinpal;
 
@@ -30,6 +31,15 @@ class PaymentDriverManager extends Manager implements Factory
         $config = collect($this->config->get('irpayment.drivers.payping', []));
 
         return new Payping(
+            $config
+        );
+    }
+
+    public function createPaykanDriver(): PaymentDriver
+    {
+        $config = collect($this->config->get('irpayment.drivers.paykan', []));
+
+        return new Paykan(
             $config
         );
     }
