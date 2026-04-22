@@ -12,6 +12,7 @@ use IRPayment\Repositories\PaymentRepository;
 
 class ZarinpalPaymentController extends Controller
 {
+    /** @see \IRPayment\Tests\Http\Controllers\ZarinpalPaymentVerifyTest */
     public function verify(Request $request, PaymentRepository $paymentRepo): View
     {
         $authorityKey = $request->string('authority');

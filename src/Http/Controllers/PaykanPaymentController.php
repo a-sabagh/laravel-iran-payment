@@ -10,6 +10,7 @@ use IRPayment\Repositories\PaymentRepository;
 
 class PaykanPaymentController extends Controller
 {
+    /** @see \IRPayment\Tests\Http\Controllers\PaykanPaymentVerifyTest */
     public function verify(Request $request, PaymentRepository $paymentRepo): View
     {
         $validator = Validator::make($request->all(), [

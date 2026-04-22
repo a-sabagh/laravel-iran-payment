@@ -24,6 +24,7 @@ class Paykan implements OnlineChannel, PaymentDriver
         return route('irpayment.payment.paykan.verify');
     }
 
+    /** @see \IRPayment\Tests\PaykanDriverProcessTest */
     public function process(Payment $payment)
     {
         $response = $this->request($payment);

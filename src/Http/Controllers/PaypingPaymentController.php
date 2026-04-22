@@ -9,6 +9,7 @@ use IRPayment\Repositories\PaymentRepository;
 
 class PaypingPaymentController extends Controller
 {
+    /** @see \IRPayment\Tests\Http\Controllers\PaypingPaymentVerifyTest */
     public function verify(Request $request, PaymentRepository $paymentRepo)
     {
         $encodedData = $request->string('data');

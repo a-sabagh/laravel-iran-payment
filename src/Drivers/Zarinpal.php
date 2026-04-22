@@ -39,6 +39,7 @@ class Zarinpal implements OnlineChannel, PaymentDriver
         return route('irpayment.payment.zarinpal.verify');
     }
 
+    /** @see \IRPayment\Tests\PaymentZarinpalPublicActionsTest */
     public function process(Payment $payment): ProcessResponseValueObject
     {
         [

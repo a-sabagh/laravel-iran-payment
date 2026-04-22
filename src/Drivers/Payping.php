@@ -23,6 +23,7 @@ class Payping implements OnlineChannel, PaymentDriver
         return route('irpayment.payment.payping.verify');
     }
 
+    /** @see \IRPayment\Tests\PaymentPaypingProcessTest */
     public function process(Payment $payment)
     {
         $paymentCode = $this->pay($payment);
