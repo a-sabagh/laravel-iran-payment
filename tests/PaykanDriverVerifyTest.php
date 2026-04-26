@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use IRPayment\DTO\VerificationValueObject;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Workbench\App\Models\Order;
 
 use function Orchestra\Testbench\workbench_path;
@@ -77,7 +78,17 @@ class PaykanDriverVerifyTest extends TestCase
         Http::assertSentCount(1);
     }
 
-    public function test_paykan_verify_failed(): void
+    public static function verifyNotConfirmedProvider(): array
+    {
+        return [
+            ['CANCELLED', 'تراکنش لغو شد', 503],
+            ['FAILED', 'تراکنش ناموفق', 508],
+            ['INVALID_CARD', 'کارتی که با آن پرداخت انجام شده معتبر نیست', 400],
+        ];
+    }
+
+    #[DataProvider('verifyNotConfirmedProvider')]
+    public function test_paykan_verify_not_confirmed($status, $message, $code): void
     {
         $this->app->setLocale('fa_IR');
 
@@ -97,7 +108,7 @@ class PaykanDriverVerifyTest extends TestCase
         Http::fake([
             'https://pgw.paykan.ir/api/v1/withdraw/verify/' => Http::response([
                 'data' => [
-                    'status' => 'FAILED',
+                    'status' => $status,
                 ],
             ], 200),
         ]);
@@ -109,8 +120,7 @@ class PaykanDriverVerifyTest extends TestCase
         ]);
 
         $this->assertInstanceOf(VerificationValueObject::class, $responseVO);
-        $this->assertSame(508, $responseVO->code);
-        $this->assertNotNull($responseVO->message);
-        $this->assertSame('تراکنش ناموفق', $responseVO->message);
+        $this->assertSame($code, $responseVO->code);
+        $this->assertSame($message, $responseVO->message);
     }
 }
