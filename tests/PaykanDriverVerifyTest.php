@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use IRPayment\DTO\VerificationValueObject;
+use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -122,5 +123,52 @@ class PaykanDriverVerifyTest extends TestCase
         $this->assertInstanceOf(VerificationValueObject::class, $responseVO);
         $this->assertSame($code, $responseVO->code);
         $this->assertSame($message, $responseVO->message);
+    }
+
+    public static function verifyHttpResponseNotOKProvider(): array
+    {
+        return [
+            [
+                400,
+                'مشکلی در ارسال درخواست پیش آمده است',
+            ],
+            [
+                500,
+                'خطای درگاه بانکی',
+            ],
+        ];
+    }
+
+    #[DataProvider('verifyHttpResponseNotOKProvider')]
+    public function test_verify_http_response_not_ok(int $statusCode, string $message): void
+    {
+        $this->app->setLocale('fa_IR');
+
+        $this->expectException(PaymentDriverException::class);
+        $this->expectExceptionCode($statusCode);
+        $this->expectExceptionMessage($message);
+
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->for($order, 'paymentable')
+            ->create();
+
+        $merchantId = fake()->numerify('merchant-####');
+
+        $this->app->config->set('irpayment.drivers.paykan', [
+            'merchant_id' => $merchantId,
+            'currency' => 'IRR',
+        ]);
+
+        Http::fake([
+            'https://pgw.paykan.ir/api/v1/withdraw/verify/' => Http::response([], $statusCode),
+        ]);
+
+        IRPayment::driver('paykan')->verify($payment->amount, [
+            'order_id' => $order->id,
+            'tracking_code' => 'paykan-token-123',
+            'ref_num' => '1000005489',
+        ]);
     }
 }
