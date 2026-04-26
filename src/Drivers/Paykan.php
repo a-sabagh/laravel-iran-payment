@@ -78,6 +78,19 @@ class Paykan implements OnlineChannel, PaymentDriver
         return $url;
     }
 
+    /** @see \IRPayment\Tests\PaykanVerifyStatusToCodeTest */
+    protected function toCode($status): int
+    {
+        return match ($status) {
+            'CONFIRMED' => 200,
+            'FAILED' => 508,
+            'INVALID_CARD' => 400,
+            'CANCELLED' => 503,
+            default => -1,
+        };
+    }
+
+    /** @see \IRPayment\Tests\PaykanDriverVerifyTest */
     public function verify(int $amount, array $creadentials): VerificationValueObject
     {
         $url = 'https://pgw.paykan.ir/api/v1/withdraw/verify/';
@@ -94,7 +107,7 @@ class Paykan implements OnlineChannel, PaymentDriver
 
         $response = $httpResponse->json();
 
-        $status = data_get($response, 'data.status', null);
+        $status = data_get($response, 'data.status');
 
         if (! $httpResponse->ok()) {
             $code = $httpResponse->status();
@@ -104,15 +117,16 @@ class Paykan implements OnlineChannel, PaymentDriver
             throw new PaymentDriverException($message, $code);
         }
 
-        $code = Lang::get("irpayment::messages.paykan.code.{$status}");
-        $message = Lang::get("irpayment::messages.paykan.message.{$status}");
+        $code = $this->toCode($status);
+
+        $message = Lang::get('irpayment::messages.paykan.message.'.$status);
 
         return new VerificationValueObject(
             code: $code,
             message: $message,
             cardHash: data_get($response, 'data.card_no'),
             cardMask: data_get($response, 'data.hashed_card_no'),
-            referenceId: data_get($response, 'data.ref_num'),
+            referenceId: (int) data_get($response, 'data.ref_num'),
         );
 
         return $response;
