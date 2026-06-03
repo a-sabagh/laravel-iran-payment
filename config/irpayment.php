@@ -24,14 +24,17 @@ return [
     */
     'drivers' => [
         'zarinpal' => [
+            'active' => env('IRPYMENT_ZARINPAL_ACTIVE', 0),
             'merchant_id' => env('IRPYMENT_ZARINPAL_MERCHANT_ID', ''),
             'currency' => 'IRT',
         ],
         'payping' => [
+            'active' => env('IRPYMENT_PAYPING_ACTIVE', 0),
             'token' => env('IRPYMENT_PAYPING_TOKEN', ''),
             'currency' => 'IRT',
         ],
         'paykan' => [
+            'active' => env('IRPYMENT_PAYPING_ACTIVE', 0),
             'merchant_id' => env('IRPYMENT_PAYKAN_MERCHANT_ID', ''),
             'currency' => 'IRT',
         ],

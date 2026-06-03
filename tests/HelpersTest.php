@@ -3,27 +3,71 @@
 namespace IRPayment\Tests;
 
 use IRPayment\Enums\PaymentChannel;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function IRPayment\get_available_payment_drivers;
 
 class HelpersTest extends TestCase
 {
-    public function test_irpayment_available_payment_drivers(): void
+    public static function availablePaymentDriversProvider(): array
     {
-        $this->app->config->set('irpayment.drivers', [
-            'zarinpal' => [
-                'channel' => PaymentChannel::ONLINE,
+        return [
+            'active online driver is available' => [
+                [
+                    'zarinpal' => [
+                        'active' => true,
+                        'channel' => PaymentChannel::ONLINE,
+                    ],
+                ],
+                ['zarinpal'],
             ],
-            'saman' => [
-                'channel' => PaymentChannel::ONLINE,
+            'inactive online driver is unavailable' => [
+                [
+                    'zarinpal' => [
+                        'active' => false,
+                        'channel' => PaymentChannel::ONLINE,
+                    ],
+                ],
+                [],
             ],
-            'bank_transfer' => [
-                'channel' => PaymentChannel::OFFLINE,
+            'active offline driver is unavailable' => [
+                [
+                    'card_transfer' => [
+                        'active' => true,
+                        'channel' => PaymentChannel::OFFLINE,
+                    ],
+                ],
+                [],
             ],
-        ]);
+            'only active online drivers are available' => [
+                [
+                    'zarinpal' => [
+                        'active' => true,
+                        'channel' => PaymentChannel::ONLINE,
+                    ],
+                    'payping' => [
+                        'active' => false,
+                        'channel' => PaymentChannel::ONLINE,
+                    ],
+                    'paykan' => [
+                        'active' => true,
+                        'channel' => PaymentChannel::ONLINE,
+                    ],
+                    'card_transfer' => [
+                        'active' => true,
+                        'channel' => PaymentChannel::OFFLINE,
+                    ],
+                ],
+                ['zarinpal', 'paykan'],
+            ],
+        ];
+    }
 
-        $availablePaymentDrivers = get_available_payment_drivers();
+    #[DataProvider('availablePaymentDriversProvider')]
+    public function test_irpayment_available_payment_drivers(array $drivers, array $expected): void
+    {
+        $this->app->config->set('irpayment.drivers', $drivers);
 
-        $this->assertSame(['zarinpal', 'saman'], $availablePaymentDrivers);
+        $this->assertSame($expected, get_available_payment_drivers());
     }
 }
