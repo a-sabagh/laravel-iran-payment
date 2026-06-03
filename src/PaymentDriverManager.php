@@ -21,6 +21,8 @@ class PaymentDriverManager extends Manager implements Factory
      *
      * @throws \IRPayment\Exceptions\PaymentDriverNotActive
      * @throws \InvalidArgumentException
+     * 
+     * @see \IRPayment\Tests\PaymentDriverDeactiveTest
      */
     protected function createDriver($driver)
     {
