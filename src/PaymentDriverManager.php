@@ -27,7 +27,7 @@ class PaymentDriverManager extends Manager implements Factory
         $obj = parent::createDriver($driver);
 
         if (! $obj->config->get('active')) {
-            throw new PaymentDriverNotActive('Driver is deactive');
+            throw new PaymentDriverNotActive("Driver {$driver} is deactive");
         }
 
         return $obj;
