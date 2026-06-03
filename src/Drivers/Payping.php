@@ -15,7 +15,7 @@ use IRPayment\Models\Payment;
 class Payping implements OnlineChannel, PaymentDriver
 {
     public function __construct(
-        protected Collection $config
+        public Collection $config
     ) {}
 
     public function CallbackUrl(): string

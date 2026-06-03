@@ -33,6 +33,7 @@ class PaymentPaypingProcessTest extends TestCase
         // configure payping gateway
         $token = fake()->asciify('payping-user-************');
         $this->app->config->set('irpayment.drivers.payping', [
+            'active' => true,
             'token' => $token,
             'currency' => 'IRR',
         ]);

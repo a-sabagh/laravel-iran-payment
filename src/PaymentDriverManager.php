@@ -9,9 +9,30 @@ use IRPayment\Drivers\CardTransfer;
 use IRPayment\Drivers\Paykan;
 use IRPayment\Drivers\Payping;
 use IRPayment\Drivers\Zarinpal;
+use IRPayment\Exceptions\PaymentDriverNotActive;
 
 class PaymentDriverManager extends Manager implements Factory
 {
+    /**
+     * Create a payment driver instance when the configured driver is active.
+     *
+     * @param  string  $driver
+     * @return mixed
+     *
+     * @throws \IRPayment\Exceptions\PaymentDriverNotActive
+     * @throws \InvalidArgumentException
+     */
+    protected function createDriver($driver)
+    {
+        $obj = parent::createDriver($driver);
+
+        if (! $obj->config->get('active')) {
+            throw new PaymentDriverNotActive('Driver is deactive');
+        }
+
+        return $obj;
+    }
+
     public function getDefaultDriver()
     {
         return $this->config->get('irpayment.default');
@@ -46,7 +67,7 @@ class PaymentDriverManager extends Manager implements Factory
 
     public function createCardTransferDriver(): PaymentDriver
     {
-        $config = collect($this->config->get('irpayment.drivers.card_payment', []));
+        $config = collect($this->config->get('irpayment.drivers.card_transfer', []));
 
         return new CardTransfer(
             $config

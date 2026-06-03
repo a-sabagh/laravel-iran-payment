@@ -10,7 +10,7 @@ use IRPayment\Enums\PaymentChannel;
 class CardTransfer implements PaymentDriver
 {
     public function __construct(
-        protected Collection $config
+        public Collection $config
     ) {}
 
     public function title(): string

@@ -38,6 +38,10 @@ return [
             'merchant_id' => env('IRPYMENT_PAYKAN_MERCHANT_ID', ''),
             'currency' => 'IRT',
         ],
+        'card_transfer' => [
+            'active' => env('IRPYMENT_CARD_TRANSFER_ACTIVE', 1),
+            'currency' => 'IRT',
+        ],
     ],
 
 ];

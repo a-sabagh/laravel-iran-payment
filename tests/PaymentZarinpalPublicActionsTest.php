@@ -36,6 +36,7 @@ class PaymentZarinpalPublicActionsTest extends TestCase
         ]);
 
         $this->app->config->set('irpayment.drivers.zarinpal', [
+            'active' => 1,
             'merchant_id' => '1234',
             'currency' => 'IRR',
         ]);

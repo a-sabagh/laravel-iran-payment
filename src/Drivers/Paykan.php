@@ -16,7 +16,7 @@ use IRPayment\Models\Payment;
 class Paykan implements OnlineChannel, PaymentDriver
 {
     public function __construct(
-        protected Collection $config
+        public Collection $config
     ) {}
 
     public function CallbackUrl(): string

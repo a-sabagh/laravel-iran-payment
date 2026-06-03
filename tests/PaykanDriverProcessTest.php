@@ -35,6 +35,7 @@ class PaykanDriverProcessTest extends TestCase
         $merchantId = fake()->numerify('merchant-####');
 
         $this->app->config->set('irpayment.drivers.paykan', [
+            'active' => true,
             'merchant_id' => $merchantId,
             'currency' => 'IRR',
         ]);
@@ -80,6 +81,7 @@ class PaykanDriverProcessTest extends TestCase
             ->create();
 
         $this->app->config->set('irpayment.drivers.paykan', [
+            'active' => true,
             'merchant_id' => fake()->numerify('merchant-####'),
             'currency' => 'IRR',
         ]);

@@ -16,7 +16,7 @@ use IRPayment\Models\Payment;
 class Zarinpal implements OnlineChannel, PaymentDriver
 {
     public function __construct(
-        protected Collection $config
+        public Collection $config
     ) {}
 
     public function title(): string
