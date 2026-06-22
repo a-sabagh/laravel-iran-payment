@@ -3,6 +3,7 @@
 namespace IRPayment\Models;
 
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -61,5 +62,25 @@ class Payment extends Model
     public function scopeAuthorityKey(Builder $query, string $authorityKey): Builder
     {
         return $query->where('authority_key', $authorityKey);
+    }
+
+    /**
+     * @see \IRPayment\Tests\PaymentChannelAttributeTest
+     */
+    public function online(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->payment_channel === PaymentChannel::ONLINE
+        );
+    }
+
+    /**
+     * @see \IRPayment\Tests\PaymentChannelAttributeTest
+     */
+    public function offline(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->payment_channel === PaymentChannel::OFFLINE
+        );
     }
 }
