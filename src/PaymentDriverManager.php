@@ -6,6 +6,7 @@ use Illuminate\Support\Manager;
 use IRPayment\Contracts\Factory;
 use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Drivers\CardTransfer;
+use IRPayment\Drivers\Credit;
 use IRPayment\Drivers\Paykan;
 use IRPayment\Drivers\Payping;
 use IRPayment\Drivers\Zarinpal;
@@ -21,7 +22,7 @@ class PaymentDriverManager extends Manager implements Factory
      *
      * @throws \IRPayment\Exceptions\PaymentDriverNotActive
      * @throws \InvalidArgumentException
-     * 
+     *
      * @see \IRPayment\Tests\PaymentDriverDeactiveTest
      */
     protected function createDriver($driver)
@@ -72,6 +73,15 @@ class PaymentDriverManager extends Manager implements Factory
         $config = collect($this->config->get('irpayment.drivers.card_transfer', []));
 
         return new CardTransfer(
+            $config
+        );
+    }
+
+    public function createCreditDriver(): PaymentDriver
+    {
+        $config = collect($this->config->get('irpayment.drivers.credit', []));
+
+        return new Credit(
             $config
         );
     }

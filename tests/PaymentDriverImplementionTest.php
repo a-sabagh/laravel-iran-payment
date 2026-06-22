@@ -26,4 +26,12 @@ class PaymentDriverImplementionTest extends TestCase
 
         $this->assertSame('Card Transfer', $CardTransferPaymentDriver->title());
     }
+
+    #[DependsExternal(PaymentDriverTest::class, 'test_payment_facade_room_object')]
+    public function test_credit_payment_driver_attributes(): void
+    {
+        $creditPaymentDriver = IRPayment::driver('credit');
+
+        $this->assertSame('Credit', $creditPaymentDriver->title());
+    }
 }

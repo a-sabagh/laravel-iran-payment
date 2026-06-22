@@ -16,6 +16,11 @@ return [
         'description' => 'Pay offline by transferring money directly from your card to the merchant’s card.',
     ],
 
+    'credit' => [
+        'title' => 'Credit',
+        'description' => 'Pay offline using your account credit balance.',
+    ],
+
     'zarinpal' => [
         'title' => 'Zarinpal',
         'description' => 'Pay securely online via the Zarinpal payment gateway.',

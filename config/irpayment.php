@@ -42,6 +42,10 @@ return [
             'active' => env('IRPYMENT_CARD_TRANSFER_ACTIVE', 1),
             'currency' => 'IRT',
         ],
+        'credit' => [
+            'active' => env('IRPYMENT_CREDIT_ACTIVE', 1),
+            'currency' => 'IRT',
+        ],
     ],
 
 ];

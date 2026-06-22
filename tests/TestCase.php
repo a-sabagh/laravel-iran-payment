@@ -15,6 +15,7 @@ class TestCase extends TestbenchTestCase
         config()->set('irpayment.drivers.payping.active', 1);
         config()->set('irpayment.drivers.zarinpal.active', 1);
         config()->set('irpayment.drivers.card_transfer.active', 1);
+        config()->set('irpayment.drivers.credit.active', 1);
     }
 
     protected function getPackageProviders($app)
