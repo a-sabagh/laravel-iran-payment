@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 use function IRPayment\get_available_payment_drivers;
 
-class HelpersTest extends TestCase
+class HelpersAvailablePaymentDriversTest extends TestCase
 {
     public static function availablePaymentDriversProvider(): array
     {
