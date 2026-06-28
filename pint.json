@@ -1,14 +1,14 @@
 {
   "preset": "laravel",
   "rules": {
-    "ordered_imports": false,
-    "global_namespace_import": {
-      "import_classes": true,
-      "import_constants": null,
-      "import_functions": null
-    },
-    "fully_qualified_strict_types": {
-      "import_symbols": false
-    }
+    "phpdoc_to_comment": false,
+    "phpdoc_types": false,
+    "fully_qualified_strict_types": false,
+    "no_unused_imports": true,
+    "no_superfluous_phpdoc_tags": true,
+    "phpdoc_trim_consecutive_blank_line_separation": true,
+    "phpdoc_separation": true,
+    "phpdoc_summary": true,
+    "phpdoc_align": false
   }
 }
