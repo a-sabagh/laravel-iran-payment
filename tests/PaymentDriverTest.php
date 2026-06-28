@@ -4,34 +4,42 @@ namespace IRPayment\Tests;
 
 use IRPayment\Drivers\CardTransfer;
 use IRPayment\Drivers\Credit;
+use IRPayment\Drivers\OnlineDriverDecorator;
 use IRPayment\Drivers\Paykan;
 use IRPayment\Drivers\Payping;
 use IRPayment\Drivers\Zarinpal;
 use IRPayment\Facades\IRPayment;
 use IRPayment\PaymentDriverManager;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
 
 class PaymentDriverTest extends TestCase
 {
-    public function test_payment_driver_can_instanciate_zarinpal(): void
+    public static function onlinerDriverProvider(): array
     {
-        $zarinpal = $this->app->make(PaymentDriverManager::class)->driver('zarinpal');
-
-        $this->assertInstanceOf(Zarinpal::class, $zarinpal);
+        return [
+            [
+                'driver' => 'payping',
+                'class' => Payping::class,
+            ],
+            [
+                'driver' => 'zarinpal',
+                'class' => Zarinpal::class,
+            ],
+            [
+                'driver' => 'paykan',
+                'class' => Paykan::class,
+            ],
+        ];
     }
 
-    public function test_payment_driver_can_instanciate_payping(): void
+    #[DataProvider('onlinerDriverProvider')]
+    public function test_payment_driver_can_instanciate_payping(string $driver, string $class): void
     {
-        $payping = $this->app->make(PaymentDriverManager::class)->driver('payping');
+        $decorator = $this->app->make(PaymentDriverManager::class)->driver($driver);
 
-        $this->assertInstanceOf(Payping::class, $payping);
-    }
-
-    public function test_payment_driver_can_instanciate_paykan(): void
-    {
-        $paykan = $this->app->make(PaymentDriverManager::class)->driver('paykan');
-
-        $this->assertInstanceOf(Paykan::class, $paykan);
+        $this->assertInstanceOf(OnlineDriverDecorator::class, $decorator);
+        $this->assertInstanceOf($class, $decorator->driver);
     }
 
     public function test_payment_facade_room_object(): void

@@ -3,6 +3,8 @@
 namespace IRPayment\DTO;
 
 use BadMethodCallException;
+use IRPayment\Contracts\PaymentDriver;
+use IRPayment\Drivers\OnlineDriverDecorator;
 use IRPayment\Facades\IRPayment;
 
 class PaymentMethodValueObject
@@ -11,13 +13,15 @@ class PaymentMethodValueObject
         public string $paymentMethodDriver
     ) {}
 
-    public function __get($name)
+    public function __get(string $name)
     {
         $paymentMethodDriver = $this->paymentMethodDriver;
 
         $paymentDriver = IRPayment::driver($paymentMethodDriver);
 
-        if (! method_exists($paymentDriver, $name)) {
+        $normalizedDriver = $this->normalizedDriver($paymentDriver);
+
+        if (! method_exists($normalizedDriver, $name)) {
             throw new BadMethodCallException(sprintf(
                 __('The method [%s] does not exist on driver [%s].'),
                 $name,
@@ -25,7 +29,20 @@ class PaymentMethodValueObject
             ));
         }
 
-        return $paymentDriver->$name();
+        return $normalizedDriver->$name();
+    }
+
+    /**
+     * Get the underlying payment driver from decorated online drivers.
+     * 
+     * @see \IRPayment\PaymentDriverManager
+     * @see \IRPayment\Drivers\OnlineDriverDecorator
+     * @see \IRPayment\Contracts\OnlineChannel
+     */
+    public function normalizedDriver(PaymentDriver|OnlineDriverDecorator $paymentDriver)
+    {
+        return $paymentDriver instanceof OnlineDriverDecorator ? 
+            $paymentDriver->driver : $paymentDriver;
     }
 
     public function __toString()
