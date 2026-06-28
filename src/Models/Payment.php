@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Arr;
 use IRPayment\Casts\PaymentMethodCast;
 use IRPayment\Database\Factories\PaymentFactory;
 use IRPayment\Enums\PaymentChannel;
@@ -81,6 +82,51 @@ class Payment extends Model
     {
         return Attribute::make(
             get: fn () => $this->payment_channel === PaymentChannel::OFFLINE
+        );
+    }
+
+    /**
+     * @see \IRPayment\Tests\PaymentHasStatusTest
+     */
+    public function hasStatus(PaymentStatus|string|array $status): bool
+    {
+        $statuses = Arr::wrap($status);
+
+        $normalizedClusore = function ($value) {
+            if ($value instanceof PaymentStatus) {
+                return $value;
+            }
+
+            if (is_string($value)) {
+                return PaymentStatus::tryFrom($value);
+            }
+
+            return null;
+        };
+
+        $normalized = collect($statuses)
+            ->map($normalizedClusore)
+            ->filter()
+            ->all();
+
+        return in_array($this->status, $normalized, true);
+    }
+
+    /**
+     * @see \IRPayment\Tests\PaymentHasStatusTest
+     */
+    public function missingStatus(PaymentStatus|string|array $status): bool
+    {
+        return ! $this->hasStatus($status);
+    }
+
+    /**
+     * @see \IRPayment\Tests\PaymentHasStatusTest
+     */
+    public function completed(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->hasStatus(PaymentStatus::COMPLETE)
         );
     }
 }
