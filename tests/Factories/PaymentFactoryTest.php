@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Factories;
+namespace IRPayment\Tests\Factories;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use IRPayment\Enums\PaymentChannel;

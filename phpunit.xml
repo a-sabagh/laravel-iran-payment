@@ -7,8 +7,15 @@
     <testsuites>
         <testsuite name="IRPayment">
             <directory suffix="Test.php">./tests</directory>
+            <exclude>./vendor</exclude>
         </testsuite>
     </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
 
     <php>
         <server name="APP_ENV" value="testing"/>
