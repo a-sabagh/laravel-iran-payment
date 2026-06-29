@@ -16,8 +16,8 @@ enum PaymentStatus: string
             'PENDING' => 'info',
             'PROCESSING' => 'primary',
             'COMPLETE' => 'success',
-            'FAILED' => 'dark',
-            'CANCELED' => 'secondary',
+            'FAILED' => 'danger',
+            'CANCELED' => 'dark',
         ]);
     }
 
