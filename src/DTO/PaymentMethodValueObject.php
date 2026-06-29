@@ -7,6 +7,11 @@ use IRPayment\Contracts\PaymentDriver;
 use IRPayment\Drivers\OnlineDriverDecorator;
 use IRPayment\Facades\IRPayment;
 
+/**
+ * @property-read string $title
+ * @property-read string $description
+ * @property-read \IRPayment\Enums\PaymentChannel $channel
+ */
 class PaymentMethodValueObject
 {
     public function __construct(
@@ -34,14 +39,14 @@ class PaymentMethodValueObject
 
     /**
      * Get the underlying payment driver from decorated online drivers.
-     * 
+     *
      * @see \IRPayment\PaymentDriverManager
      * @see \IRPayment\Drivers\OnlineDriverDecorator
      * @see \IRPayment\Contracts\OnlineChannel
      */
     public function normalizedDriver(PaymentDriver|OnlineDriverDecorator $paymentDriver)
     {
-        return $paymentDriver instanceof OnlineDriverDecorator ? 
+        return $paymentDriver instanceof OnlineDriverDecorator ?
             $paymentDriver->driver : $paymentDriver;
     }
 
