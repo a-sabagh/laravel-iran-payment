@@ -13,6 +13,12 @@ use IRPayment\Database\Factories\PaymentFactory;
 use IRPayment\Enums\PaymentChannel;
 use IRPayment\Enums\PaymentStatus;
 
+/**
+ * @property-read bool $online
+ * @property-read bool $offline
+ * @property-read bool $completed
+ * @property-read bool $failed
+ */
 class Payment extends Model
 {
     use HasFactory;
@@ -127,6 +133,16 @@ class Payment extends Model
     {
         return Attribute::make(
             get: fn () => $this->hasStatus(PaymentStatus::COMPLETE)
+        );
+    }
+
+    /**
+     * @see \IRPayment\Tests\PaymentHasStatusTest
+     */
+    public function failed(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->hasStatus(PaymentStatus::FAILED)
         );
     }
 }

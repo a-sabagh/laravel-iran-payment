@@ -72,4 +72,15 @@ class PaymentHasStatusTest extends TestCase
             'pending',
         ]));
     }
+
+    public function test_payment_failed_attribute(): void
+    {
+        $payment = new Payment([
+            'status' => PaymentStatus::FAILED,
+        ]);
+
+        $this->assertTrue($payment->failed);
+
+        $this->assertFalse($payment->completed);
+    }
 }
