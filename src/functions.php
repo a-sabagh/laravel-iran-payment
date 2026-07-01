@@ -45,6 +45,7 @@ function get_active_payment_drivers_enhance_options(): array
             $results[] = [
                 'id' => $driver,
                 'text' => IRPayment::driver($driver)->title(),
+                'caption' => IRPayment::driver($driver)->description(),
             ];
         }
     }

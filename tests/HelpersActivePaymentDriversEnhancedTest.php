@@ -16,12 +16,14 @@ class HelpersActivePaymentDriversEnhancedTest extends TestCase
                     'zarinpal' => [
                         'active' => true,
                         'title' => 'Zarinpal Gateway',
+                        'description' => 'Zarinpal Gateway Description',
                     ],
                 ],
                 [
                     [
                         'id' => 'zarinpal',
                         'text' => 'Zarinpal Gateway',
+                        'caption' => 'Zarinpal Gateway Description',
                     ],
                 ],
             ],
@@ -30,6 +32,7 @@ class HelpersActivePaymentDriversEnhancedTest extends TestCase
                     'zarinpal' => [
                         'active' => false,
                         'title' => 'Zarinpal Gateway',
+                        'description' => 'Zarinpal Gateway Description',
                     ],
                 ],
                 [],
@@ -38,12 +41,15 @@ class HelpersActivePaymentDriversEnhancedTest extends TestCase
                 [
                     'zarinpal' => [
                         'active' => true,
+                        'title' => 'Zarinpal',
+                        'description' => 'Zarinpal Gateway Description',
                     ],
                 ],
                 [
                     [
                         'id' => 'zarinpal',
                         'text' => 'Zarinpal',
+                        'caption' => 'Zarinpal Gateway Description',
                     ],
                 ],
             ],
@@ -52,24 +58,29 @@ class HelpersActivePaymentDriversEnhancedTest extends TestCase
                     'zarinpal' => [
                         'active' => true,
                         'title' => 'Zarinpal Gateway',
+                        'description' => 'Zarinpal Gateway Description',
                     ],
                     'payping' => [
                         'active' => false,
                         'title' => 'Payping Gateway',
+                        'description' => 'Payping Gateway Description',
                     ],
                     'credit' => [
                         'active' => true,
                         'title' => 'Wallet Credit',
+                        'description' => 'Wallet Credit Description',
                     ],
                 ],
                 [
                     [
                         'id' => 'zarinpal',
                         'text' => 'Zarinpal Gateway',
+                        'caption' => 'Zarinpal Gateway Description',
                     ],
                     [
                         'id' => 'credit',
                         'text' => 'Wallet Credit',
+                        'caption' => 'Wallet Credit Description',
                     ],
                 ],
             ],
