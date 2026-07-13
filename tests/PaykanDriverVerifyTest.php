@@ -43,7 +43,7 @@ class PaykanDriverVerifyTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.ir/api/v1/withdraw/verify/' => Http::response([
+            'https://pgw.paykan.app/api/v1/withdraw/verify/' => Http::response([
                 'data' => [
                     'status' => 'CONFIRMED',
                     'card_no' => '6037991234567890',
@@ -69,7 +69,7 @@ class PaykanDriverVerifyTest extends TestCase
         $this->assertSame(1000005489, $responseVO->referenceId);
 
         Http::assertSent(function (Request $request) use ($merchantId, $payment, $order) {
-            return $request->url() === 'https://pgw.paykan.ir/api/v1/withdraw/verify/'
+            return $request->url() === 'https://pgw.paykan.app/api/v1/withdraw/verify/'
                 && $request['merchant_id'] === $merchantId
                 && $request['amount'] === $payment->amount
                 && $request['order_id'] === $order->id
@@ -109,7 +109,7 @@ class PaykanDriverVerifyTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.ir/api/v1/withdraw/verify/' => Http::response([
+            'https://pgw.paykan.app/api/v1/withdraw/verify/' => Http::response([
                 'data' => [
                     'status' => $status,
                 ],
@@ -165,7 +165,7 @@ class PaykanDriverVerifyTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.ir/api/v1/withdraw/verify/' => Http::response([], $statusCode),
+            'https://pgw.paykan.app/api/v1/withdraw/verify/' => Http::response([], $statusCode),
         ]);
 
         IRPayment::driver('paykan')->verify($payment->amount, [

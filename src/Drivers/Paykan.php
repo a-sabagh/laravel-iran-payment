@@ -49,7 +49,7 @@ class Paykan implements OnlineChannel, PaymentDriver
 
     public function request(Payment $payment)
     {
-        $url = 'https://pgw.paykan.ir/api/v1/withdraw/';
+        $url = 'https://pgw.paykan.app/api/v1/withdraw/';
 
         $data = [
             'merchant_id' => $this->config->get('merchant_id'),
@@ -76,7 +76,7 @@ class Paykan implements OnlineChannel, PaymentDriver
 
     public function startPay(string $authorityKey)
     {
-        $url = "https://pgw.paykan.ir/pgw/pay/{$authorityKey}";
+        $url = "https://pgw.paykan.app/pgw/pay/{$authorityKey}";
 
         return $url;
     }
@@ -96,7 +96,7 @@ class Paykan implements OnlineChannel, PaymentDriver
     /** @see \IRPayment\Tests\PaykanDriverVerifyTest */
     public function verify(int $amount, array $creadentials): VerificationValueObject
     {
-        $url = 'https://pgw.paykan.ir/api/v1/withdraw/verify/';
+        $url = 'https://pgw.paykan.app/api/v1/withdraw/verify/';
 
         $data = [
             'merchant_id' => $this->config->get('merchant_id'),

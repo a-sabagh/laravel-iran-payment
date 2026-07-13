@@ -41,7 +41,7 @@ class PaykanDriverProcessTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.ir/api/v1/withdraw/' => Http::response([
+            'https://pgw.paykan.app/api/v1/withdraw/' => Http::response([
                 'token' => 'paykan-token-123',
                 'ref_num' => 'paykan-ref-456',
             ], 200),
@@ -51,11 +51,11 @@ class PaykanDriverProcessTest extends TestCase
 
         $this->assertInstanceOf(ProcessResponseValueObject::class, $responseVO);
 
-        $this->assertSame('https://pgw.paykan.ir/pgw/pay/paykan-token-123', $responseVO->redirectResponseUrl);
+        $this->assertSame('https://pgw.paykan.app/pgw/pay/paykan-token-123', $responseVO->redirectResponseUrl);
         $this->assertSame('paykan-ref-456', $responseVO->authorityKey);
 
         Http::assertSent(function (Request $request) use ($merchantId, $payment, $order) {
-            return $request->url() === 'https://pgw.paykan.ir/api/v1/withdraw/'
+            return $request->url() === 'https://pgw.paykan.app/api/v1/withdraw/'
                 && $request['merchant_id'] === $merchantId
                 && $request['amount'] === $payment->amount
                 && $request['order_id'] === $order->id
@@ -87,7 +87,7 @@ class PaykanDriverProcessTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.ir/api/v1/withdraw/' => Http::response([], 400),
+            'https://pgw.paykan.app/api/v1/withdraw/' => Http::response([], 400),
         ]);
 
         IRPayment::driver('paykan')->process($payment);

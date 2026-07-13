@@ -57,7 +57,7 @@ class PaykanDriverProcessHttpErrorTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.ir/api/v1/withdraw/' => Http::response([], $statusCode),
+            'https://pgw.paykan.app/api/v1/withdraw/' => Http::response([], $statusCode),
         ]);
 
         IRPayment::driver('paykan')->process($payment);
