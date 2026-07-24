@@ -57,13 +57,42 @@ class PaykanDriverProcessTest extends TestCase
         Http::assertSent(function (Request $request) use ($merchantId, $payment, $order) {
             return $request->url() === 'https://pgw.paykan.app/api/v1/withdraw/'
                 && $request['merchant_id'] === $merchantId
-                && $request['amount'] === $payment->amount
+                && $request['amount'] === $payment->amount * 10
                 && $request['order_id'] === $order->id
                 && $request['callback_method'] === 'GET'
                 && ! empty($request['callback_url']);
         });
 
         Http::assertSentCount(1);
+    }
+
+    public function test_paykan_driver_keeps_rial_amount_unchanged(): void
+    {
+        $order = Order::factory()->create();
+
+        $payment = Payment::factory()
+            ->for($order, 'paymentable')
+            ->create();
+
+        $this->app->config->set('irpayment.currency_symbol', 'IRR');
+        $this->app->config->set('irpayment.drivers.paykan', [
+            'active' => true,
+            'merchant_id' => fake()->numerify('merchant-####'),
+            'currency' => 'IRR',
+        ]);
+
+        Http::fake([
+            'https://pgw.paykan.app/api/v1/withdraw/' => Http::response([
+                'token' => 'paykan-token-123',
+                'ref_num' => 'paykan-ref-456',
+            ], 200),
+        ]);
+
+        IRPayment::driver('paykan')->process($payment);
+
+        Http::assertSent(
+            fn (Request $request) => $request['amount'] === $payment->amount
+        );
     }
 
     public function test_paykan_driver_process_return_bad_request(): void

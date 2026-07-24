@@ -53,7 +53,7 @@ class Paykan implements OnlineChannel, PaymentDriver
 
         $data = [
             'merchant_id' => $this->config->get('merchant_id'),
-            'amount' => $payment->amount,
+            'amount' => $this->normalizeAmount($payment->amount),
             'order_id' => $payment->paymentable->id,
             'callback_url' => $this->callbackUrl(),
             'callback_method' => 'GET',
@@ -81,18 +81,6 @@ class Paykan implements OnlineChannel, PaymentDriver
         return $url;
     }
 
-    /** @see \IRPayment\Tests\PaykanVerifyStatusToCodeTest */
-    protected function toCode($status): int
-    {
-        return match ($status) {
-            'CONFIRMED' => 100,
-            'FAILED' => 508,
-            'INVALID_CARD' => 400,
-            'CANCELLED' => 503,
-            default => -1,
-        };
-    }
-
     /** @see \IRPayment\Tests\PaykanDriverVerifyTest */
     public function verify(int $amount, array $creadentials): VerificationValueObject
     {
@@ -101,7 +89,7 @@ class Paykan implements OnlineChannel, PaymentDriver
         $data = [
             'merchant_id' => $this->config->get('merchant_id'),
             'order_id' => data_get($creadentials, 'order_id'),
-            'amount' => $amount,
+            'amount' => $this->normalizeAmount($amount),
             'tracking_code' => data_get($creadentials, 'tracking_code'),
             'ref_num' => data_get($creadentials, 'ref_num'),
         ];
@@ -131,6 +119,25 @@ class Paykan implements OnlineChannel, PaymentDriver
             cardMask: data_get($creadentials, 'hashed_card_no'),
             referenceId: (int) data_get($creadentials, 'ref_num'),
         );
+    }
+
+    protected function normalizeAmount(int $amount): int
+    {
+        return config('irpayment.currency_symbol', 'IRT') === 'IRT'
+            ? $amount * 10
+            : $amount;
+    }
+
+    /** @see \IRPayment\Tests\PaykanVerifyStatusToCodeTest */
+    protected function toCode($status): int
+    {
+        return match ($status) {
+            'CONFIRMED' => 100,
+            'FAILED' => 508,
+            'INVALID_CARD' => 400,
+            'CANCELLED' => 503,
+            default => -1,
+        };
     }
 
     public function title(): string

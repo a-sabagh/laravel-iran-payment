@@ -66,7 +66,7 @@ class PaykanDriverVerifyTest extends TestCase
         Http::assertSent(function (Request $request) use ($merchantId, $payment, $order) {
             return $request->url() === 'https://pgw.paykan.app/api/v1/verify/'
                 && $request['merchant_id'] === $merchantId
-                && $request['amount'] === $payment->amount
+                && $request['amount'] === $payment->amount * 10
                 && $request['order_id'] === $order->id
                 && $request['tracking_code'] === '123456'
                 && $request['ref_num'] === '1000005489';

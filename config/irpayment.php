@@ -12,6 +12,9 @@ return [
     */
     'default' => env('IRPAYMENT_DRIVER_DEFAULT', 'default'),
 
+    /** @var 'IRT'|'IRR' */
+    'currency_symbol' => env('IRPAYMENT_CURRENCY_SYMBOL', 'IRT'),
+
     /*
     |--------------------------------------------------------------------------
     | List of drivers
