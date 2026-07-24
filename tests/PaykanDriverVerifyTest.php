@@ -61,7 +61,7 @@ class PaykanDriverVerifyTest extends TestCase
         $this->assertNotNull($responseVO->message);
         $this->assertSame('6037991234567890', $responseVO->cardHash);
         $this->assertSame('****-****-****-7890', $responseVO->cardMask);
-        $this->assertSame(1000005489, $responseVO->referenceId);
+        $this->assertSame(123456, $responseVO->referenceId);
 
         Http::assertSent(function (Request $request) use ($merchantId, $payment, $order) {
             return $request->url() === 'https://pgw.paykan.app/api/v1/verify/'

@@ -117,7 +117,7 @@ class Paykan implements OnlineChannel, PaymentDriver
             message: $message,
             cardHash: data_get($creadentials, 'card_no'),
             cardMask: data_get($creadentials, 'hashed_card_no'),
-            referenceId: (int) data_get($creadentials, 'ref_num'),
+            referenceId: (int) data_get($creadentials, 'tracking_code'),
         );
     }
 

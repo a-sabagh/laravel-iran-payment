@@ -120,7 +120,7 @@ class PaykanPaymentVerifyTest extends TestCase
             message: 'Payment verified.',
             cardHash: $cardHash = hash('sha256', '6037991234561234'),
             cardMask: '6037******1234',
-            referenceId: 987654,
+            referenceId: 654321,
         );
 
         IRPayment::shouldReceive('driver->verify')
@@ -150,12 +150,12 @@ class PaykanPaymentVerifyTest extends TestCase
         $response->assertViewHasAll([
             'payment' => fn (Payment $actualPayment) => $actualPayment->is($payment),
             'verification' => fn (VerificationValueObject $actualVerification) => $actualVerification->code === 100
-                && $actualVerification->referenceId === 987654,
+                && $actualVerification->referenceId === 654321,
         ]);
 
         $this->assertSame(PaymentStatus::COMPLETE, $payment->status);
         $this->assertSame(100, $payment->code);
-        $this->assertSame(987654, $payment->reference_id);
+        $this->assertSame(654321, $payment->reference_id);
         $this->assertSame($cardHash, $payment->card_hash);
         $this->assertSame('6037******1234', $payment->card_mask);
 
