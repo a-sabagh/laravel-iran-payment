@@ -5,10 +5,12 @@ namespace IRPayment\Tests;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use IRPayment\Drivers\Paykan;
 use IRPayment\DTO\ProcessResponseValueObject;
 use IRPayment\Exceptions\PaymentDriverException;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Models\Payment;
+use Mockery;
 use Workbench\App\Models\Order;
 
 use function Orchestra\Testbench\workbench_path;
@@ -40,6 +42,19 @@ class PaykanDriverProcessTest extends TestCase
             'currency' => 'IRR',
         ]);
 
+        $mockedOrderId = (int) fake()->numerify('##########');
+
+        $driverConf = collect($this->app->config->get('irpayment.drivers.paykan'));
+
+        $driver = Mockery::mock(Paykan::class, [$driverConf])
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods();
+
+        $driver->shouldReceive('getOrderId')
+            ->once()
+            ->with($payment)
+            ->andReturn($mockedOrderId);
+
         Http::fake([
             'https://pgw.paykan.app/api/v1/withdraw/' => Http::response([
                 'token' => 'paykan-token-123',
@@ -47,18 +62,19 @@ class PaykanDriverProcessTest extends TestCase
             ], 200),
         ]);
 
-        $responseVO = IRPayment::driver('paykan')->process($payment);
+        /** @var \IRPayment\Drivers\Paykan $driver */
+        $responseVO = $driver->process($payment);
 
         $this->assertInstanceOf(ProcessResponseValueObject::class, $responseVO);
 
         $this->assertSame('https://pgw.paykan.app/pgw/pay/paykan-token-123', $responseVO->redirectResponseUrl);
         $this->assertSame('paykan-ref-456', $responseVO->authorityKey);
 
-        Http::assertSent(function (Request $request) use ($merchantId, $payment, $order) {
+        Http::assertSent(function (Request $request) use ($merchantId, $payment, $mockedOrderId) {
             return $request->url() === 'https://pgw.paykan.app/api/v1/withdraw/'
                 && $request['merchant_id'] === $merchantId
                 && $request['amount'] === $payment->amount * 10
-                && $request['order_id'] === $order->id
+                && $request['order_id'] === $mockedOrderId
                 && $request['callback_method'] === 'GET'
                 && ! empty($request['callback_url']);
         });

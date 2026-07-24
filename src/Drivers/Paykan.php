@@ -54,7 +54,7 @@ class Paykan implements OnlineChannel, PaymentDriver
         $data = [
             'merchant_id' => $this->config->get('merchant_id'),
             'amount' => $this->normalizeAmount($payment->amount),
-            'order_id' => $payment->paymentable->id,
+            'order_id' => $this->getOrderId($payment),
             'callback_url' => $this->callbackUrl(),
             'callback_method' => 'GET',
         ];
@@ -138,6 +138,11 @@ class Paykan implements OnlineChannel, PaymentDriver
             'CANCELLED' => 503,
             default => -1,
         };
+    }
+
+    protected function getOrderId(Payment $payment): int
+    {
+        return (int) ($payment->id.time());
     }
 
     public function title(): string
