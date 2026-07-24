@@ -5,6 +5,7 @@ namespace IRPayment\Http\Controllers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use IRPayment\Facades\IRPayment;
 use IRPayment\Repositories\PaymentRepository;
 
@@ -16,7 +17,13 @@ class PaykanPaymentController extends Controller
         $validator = Validator::make($request->all(), [
             'order_id' => ['required'],
             'ref_num' => ['required', 'string', 'exists:payments,authority_key'],
-            'tracking_code' => ['required'],
+            'tracking_code' => ['required', 'numeric'],
+            'status' => [
+                'required', 'string',
+                Rule::in(['CONFIRMED', 'FAILED', 'INVALID_CARD', 'CANCELLED']),
+            ],
+            'card_no' => ['nullable', 'string'],
+            'hashed_card_no' => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -32,6 +39,8 @@ class PaykanPaymentController extends Controller
             'order_id' => $request->input('order_id'),
             'tracking_code' => $request->input('tracking_code'),
             'ref_num' => $authorityKey,
+            'card_no' => $request->input('card_no'),
+            'hashed_card_no' => $request->input('hashed_card_no'),
         ];
 
         $verification = IRPayment::driver('paykan')

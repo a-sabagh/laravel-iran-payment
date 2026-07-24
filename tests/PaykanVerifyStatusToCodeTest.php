@@ -16,7 +16,7 @@ class PaykanVerifyStatusToCodeTest extends TestCase
 
         $method->setAccessible(true);
 
-        $this->assertSame(200, $method->invoke($driver, 'CONFIRMED'));
+        $this->assertSame(100, $method->invoke($driver, 'CONFIRMED'));
         $this->assertSame(508, $method->invoke($driver, 'FAILED'));
         $this->assertSame(400, $method->invoke($driver, 'INVALID_CARD'));
         $this->assertSame(503, $method->invoke($driver, 'CANCELLED'));

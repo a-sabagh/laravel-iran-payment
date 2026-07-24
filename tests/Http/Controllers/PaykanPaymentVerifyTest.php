@@ -41,6 +41,7 @@ class PaykanPaymentVerifyTest extends TestCase
 
         $response->assertViewHas('errors', fn (MessageBag $errors) => $errors->has('ref_num')
             && $errors->has('tracking_code')
+            && $errors->has('status')
             && $errors->missing('order_id'));
 
         Http::assertNothingSent();
@@ -72,15 +73,18 @@ class PaykanPaymentVerifyTest extends TestCase
             ->once()
             ->with($payment->amount, [
                 'order_id' => (string) $order->id,
-                'tracking_code' => 'tracking-123',
+                'tracking_code' => '123456',
                 'ref_num' => $payment->authority_key,
+                'card_no' => null,
+                'hashed_card_no' => null,
             ])
             ->andReturn($verification);
 
         $response = $this->get(route('irpayment.payment.paykan.verify', [
             'ref_num' => $payment->authority_key,
             'order_id' => (string) $order->id,
-            'tracking_code' => 'tracking-123',
+            'tracking_code' => '123456',
+            'status' => 'INVALID_CARD',
         ]));
 
         $payment->refresh();
@@ -123,15 +127,20 @@ class PaykanPaymentVerifyTest extends TestCase
             ->once()
             ->with($payment->amount, [
                 'order_id' => (string) $order->id,
-                'tracking_code' => 'tracking-456',
+                'tracking_code' => '654321',
                 'ref_num' => $payment->authority_key,
+                'card_no' => '6037991234561234',
+                'hashed_card_no' => '6037******1234',
             ])
             ->andReturn($verification);
 
         $response = $this->get(route('irpayment.payment.paykan.verify', [
             'ref_num' => $payment->authority_key,
             'order_id' => (string) $order->id,
-            'tracking_code' => 'tracking-456',
+            'tracking_code' => '654321',
+            'status' => 'CONFIRMED',
+            'card_no' => '6037991234561234',
+            'hashed_card_no' => '6037******1234',
         ]));
 
         $payment->refresh();

@@ -43,37 +43,32 @@ class PaykanDriverVerifyTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.app/api/v1/withdraw/verify/' => Http::response([
-                'data' => [
-                    'status' => 'CONFIRMED',
-                    'card_no' => '6037991234567890',
-                    'hashed_card_no' => '****-****-****-7890',
-                    'ref_num' => '1000005489', // Paykan return string
-                ],
+            'https://pgw.paykan.app/api/v1/verify/' => Http::response([
+                'status' => 'CONFIRMED',
             ], 200),
         ]);
 
         $responseVO = IRPayment::driver('paykan')->verify($payment->amount, [
             'order_id' => $order->id,
-            'tracking_code' => 'paykan-token-123',
+            'tracking_code' => '123456',
             'ref_num' => '1000005489',
+            'card_no' => '6037991234567890',
+            'hashed_card_no' => '****-****-****-7890',
         ]);
 
         $this->assertInstanceOf(VerificationValueObject::class, $responseVO);
-        // code can be fetched from string
-        $this->assertSame(200, $responseVO->code);
+        $this->assertSame(100, $responseVO->code);
         $this->assertNotNull($responseVO->message);
         $this->assertSame('6037991234567890', $responseVO->cardHash);
         $this->assertSame('****-****-****-7890', $responseVO->cardMask);
-        // also casting reference id into number
         $this->assertSame(1000005489, $responseVO->referenceId);
 
         Http::assertSent(function (Request $request) use ($merchantId, $payment, $order) {
-            return $request->url() === 'https://pgw.paykan.app/api/v1/withdraw/verify/'
+            return $request->url() === 'https://pgw.paykan.app/api/v1/verify/'
                 && $request['merchant_id'] === $merchantId
                 && $request['amount'] === $payment->amount
                 && $request['order_id'] === $order->id
-                && $request['tracking_code'] === 'paykan-token-123'
+                && $request['tracking_code'] === '123456'
                 && $request['ref_num'] === '1000005489';
         });
 
@@ -109,16 +104,14 @@ class PaykanDriverVerifyTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.app/api/v1/withdraw/verify/' => Http::response([
-                'data' => [
-                    'status' => $status,
-                ],
+            'https://pgw.paykan.app/api/v1/verify/' => Http::response([
+                'status' => $status,
             ], 200),
         ]);
 
         $responseVO = IRPayment::driver('paykan')->verify($payment->amount, [
             'order_id' => $order->id,
-            'tracking_code' => 'paykan-token-123',
+            'tracking_code' => '123456',
             'ref_num' => '1000005489',
         ]);
 
@@ -165,12 +158,12 @@ class PaykanDriverVerifyTest extends TestCase
         ]);
 
         Http::fake([
-            'https://pgw.paykan.app/api/v1/withdraw/verify/' => Http::response([], $statusCode),
+            'https://pgw.paykan.app/api/v1/verify/' => Http::response([], $statusCode),
         ]);
 
         IRPayment::driver('paykan')->verify($payment->amount, [
             'order_id' => $order->id,
-            'tracking_code' => 'paykan-token-123',
+            'tracking_code' => '123456',
             'ref_num' => '1000005489',
         ]);
     }
